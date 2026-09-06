@@ -32,10 +32,33 @@
     h1 { margin: 0 0 10px; font-size: clamp(32px, 6vw, 56px); line-height: 1.02; }
     header p { color: var(--muted); margin: 0 auto; max-width: 650px; line-height: 1.6; }
     .panel {
+      position: relative;
+      overflow: hidden;
       background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
       border: 1px solid var(--border); border-radius: 24px; padding: 24px;
       box-shadow: 0 20px 70px rgba(0,0,0,.24);
     }
+    /* ===== Волна ===== */
+    .panel::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 500%;
+      height: 500%;
+      background: linear-gradient(135deg, rgba(0, 255, 100, 0), rgba(0, 255, 100, 0.05), rgba(0, 255, 100, 0));
+      pointer-events: none;
+      opacity: 0;
+      transition: none;
+    }
+    .panel.wave-active::after {
+      opacity: 1;
+      animation: waveSlide 1s forwards;
+    }
+    @keyframes waveSlide {
+      0% { transform: translate(-100%, -100%); }
+      100% { transform: translate(50%, 50%); }
+    }
+    /* ============== */
     .actions {
       display: flex;
       gap: 12px;
@@ -57,25 +80,16 @@
       justify-content: center;
       min-width: 220px;
     }
-    /* Убираем синее выделение при клике */
-    button:focus, .link:focus {
-      outline: none;
-    }
-    button:focus-visible, .link:focus-visible {
-      outline: 2px solid var(--accent);
-    }
-    button, .link {
-      -webkit-tap-highlight-color: transparent;
-    }
+    button:focus, .link:focus { outline: none; }
+    button:focus-visible, .link:focus-visible { outline: 2px solid var(--accent); }
+    button, .link { -webkit-tap-highlight-color: transparent; }
 
     #generate {
       color: white;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       transition: transform 0.2s, opacity 0.25s ease;
     }
-    #generate:hover:not(.no-hover) {
-      opacity: 0.75;
-    }
+    #generate:hover:not(.no-hover) { opacity: 0.75; }
     #generate.pressed {
       transform: scale(0.95);
       opacity: 1;
@@ -85,9 +99,7 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
-    #generate:disabled:hover {
-      opacity: 0.5;
-    }
+    #generate:disabled:hover { opacity: 0.5; }
 
     .link {
       color: var(--text);
@@ -95,10 +107,7 @@
       border: 1px solid var(--border);
       transition: background 0.2s, opacity 0.25s ease;
     }
-    .link:hover {
-      background: var(--panel);
-      opacity: 0.75;
-    }
+    .link:hover { background: var(--panel); opacity: 0.75; }
 
     .options {
       display: flex;
@@ -108,7 +117,7 @@
       background: rgba(255,255,255,.03);
       border-radius: 14px;
       padding: 12px 20px;
-      margin-bottom: 10px;
+      margin-bottom: 0;
       border: 1px solid var(--border);
     }
     .options label {
@@ -130,7 +139,7 @@
     .status {
       text-align: center;
       min-height: 24px;
-      margin: 18px 0 0;
+      margin: 0;
       color: var(--muted);
       font-weight: 400;
     }
@@ -139,15 +148,15 @@
     .deck {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-top: 26px;
+      gap: 10px;
+      margin-top: 8px;
     }
     .card {
-      min-height: 118px;
+      min-height: 100px;
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 18px;
+      padding: 14px;
       position: relative;
       overflow: hidden;
       opacity: 0;
@@ -168,9 +177,9 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .number { color:var(--muted); font-size:12px; }
-    .name { font-size:16px; font-weight:800; margin-top:20px; }
-    .id { color:var(--muted); font-size:12px; margin-top:8px; }
+    .number { color:var(--muted); font-size:11px; }
+    .name { font-size:15px; font-weight:800; margin-top:16px; }
+    .id { color:var(--muted); font-size:11px; margin-top:6px; }
     .tower {
       margin-top:18px;
       padding:16px;
@@ -182,8 +191,6 @@
     }
     .tower strong { display:block; margin-bottom:5px; }
 
-    /* управление видимостью */
-    .deck.hide-ids .id { display: none; }
     .deck.hidden { display: none; }
     .tower.hidden { display: none; }
 
@@ -204,16 +211,15 @@
       <p>Это полностью сгенерированный нейросетью генератор абсолютно случайных колод в Clash Royale без всяких правил.</p>
     </header>
 
-    <section class="panel">
+    <section class="panel" id="mainPanel">
       <div class="actions">
         <button id="generate">Сгенерировать колоду</button>
         <a id="deckLink" class="link" target="_blank" style="display:none;">Открыть колоду</a>
       </div>
 
       <div class="options">
-        <label><input type="checkbox" id="showIds"> Показывать ID карт</label>
-        <label><input type="checkbox" id="showDeck"> Показывать колоду</label>
-        <label><input type="checkbox" id="showTower"> Показывать башню</label>
+        <label><input type="checkbox" id="showDeck" checked> Показывать колоду</label>
+        <label><input type="checkbox" id="showTower" checked> Показывать башню</label>
       </div>
 
       <div id="status" class="status">Загрузка базы карт…</div>
@@ -230,8 +236,8 @@
     const statusEl = document.getElementById("status");
     const deckEl = document.getElementById("deck");
     const towerEl = document.getElementById("tower");
+    const panel = document.getElementById("mainPanel");
 
-    const showIdsCb = document.getElementById("showIds");
     const showDeckCb = document.getElementById("showDeck");
     const showTowerCb = document.getElementById("showTower");
 
@@ -256,16 +262,15 @@
     }
 
     function updateVisibility() {
-      const showIds = showIdsCb.checked;
       const showDeck = showDeckCb.checked;
       const showTower = showTowerCb.checked;
 
-      deckEl.classList.toggle('hide-ids', !showIds);
       deckEl.classList.toggle('hidden', !showDeck);
       towerEl.classList.toggle('hidden', !showTower);
+      // ID всегда показываются
+      deckEl.classList.remove('hide-ids');
     }
 
-    showIdsCb.addEventListener('change', updateVisibility);
     showDeckCb.addEventListener('change', updateVisibility);
     showTowerCb.addEventListener('change', updateVisibility);
 
@@ -279,20 +284,31 @@
       pressTimer = setTimeout(() => {
         generateBtn.classList.remove('pressed');
         pressTimer = null;
-        // no-hover убирается только при mouseleave
       }, 300);
     }
 
-    // При уходе курсора снимаем блокировку hover
     generateBtn.addEventListener('mouseleave', function() {
       generateBtn.classList.remove('no-hover');
     });
+
+    // Запуск волны
+    function triggerWave() {
+      panel.classList.remove('wave-active');
+      void panel.offsetWidth;
+      panel.classList.add('wave-active');
+      setTimeout(() => {
+        panel.classList.remove('wave-active');
+      }, 700);
+    }
 
     async function generate() {
       try {
         generateBtn.disabled = true;
         statusEl.classList.remove('error');
         statusEl.textContent = "Генерирую…";
+
+        // Перезапускаем волну при каждом нажатии
+        triggerWave();
 
         const deck = api.generateDeck(cards);
         const towerName = Object.keys(api.TOWER_TROOPS)[
