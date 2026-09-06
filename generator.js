@@ -1,3 +1,72 @@
+const TOWER_TROOPS = {
+  "Tower Princess": 159000000,
+  "Cannoneer": 159000001,
+  "Dagger Duchess": 159000002,
+  "Royal Chef": 159000003,
+};
+
+const EXCLUDED_KEYS = new Set([
+  "santa-hog-rider",
+  "super-lava-hound",
+  "super-magic-archer",
+  "super-ice-golem",
+]);
+
+const EXCLUDED_NAME_PARTS = ["santa ", "super "];
+// Локальный путь к файлу с данными (относительно корня сайта или текущей директории)
+const CARDS_URL = "./cards.json"; // При необходимости измените на корректный путь
+
+function isSpecialCard(card) {
+  const key = String(card.key ?? "").trim().toLowerCase();
+  const name = String(card.name ?? "").trim().toLowerCase();
+
+  if (EXCLUDED_KEYS.has(key)) return true;
+  return EXCLUDED_NAME_PARTS.some(part => name.startsWith(part));
+}
+
+function prepareCards(rawCards) {
+  const result = new Map();
+
+  for (const card of rawCards) {
+    if (!["id", "name", "type", "rarity"].every(field => field in card)) continue;
+
+    const cardId = Number(card.id);
+    if (!Number.isFinite(cardId)) continue;
+
+    if (Object.values(TOWER_TROOPS).includes(cardId)) continue;
+    if (card.is_evolved === true) continue;
+    if (isSpecialCard(card)) continue;
+
+    const cardType = String(card.type ?? "").toLowerCase();
+    if (cardType.includes("tower")) continue;
+
+    result.set(cardId, card);
+  }
+
+  return [...result.values()];
+}
+
+function randomInt(maxExclusive) {
+  return Math.floor(Math.random() * maxExclusive);
+}
+
+function choice(items) {
+  return items[randomInt(items.length)];
+}
+
+function sample(items, count) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, count);
+}
+
+function shuffle(items) {
+  return sample(items, items.length);
+}
+
 function generateDeck(cards) {
   if (cards.length < 8) {
     throw new Error(`Недостаточно карт для генерации колоды: ${cards.length}`);
@@ -77,3 +146,35 @@ function generateDeck(cards) {
 
   return deck;
 }
+
+function makeSlots(deck) {
+  return deck.map(() => "0").join(";");
+}
+
+function makeDeckUrl(deck, towerId, language = "ru") {
+  const deckIds = deck.map(card => String(card.id)).join(";");
+  return `https://link.clashroyale.com/${language}?clashroyale://copyDeck?deck=${deckIds}&slots=${makeSlots(deck)}&tt=${towerId}`;
+}
+
+async function loadCards() {
+  // Загрузка из локального файла (кэширование удалено)
+  const response = await fetch(CARDS_URL, {
+    headers: { "Accept": "application/json" }
+  });
+  if (!response.ok) {
+    throw new Error(`Не удалось загрузить cards.json: HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+  if (!Array.isArray(data)) throw new Error("cards.json имеет неожиданный формат.");
+
+  return data;
+}
+
+window.ClashRoyaleGenerator = {
+  loadCards,
+  prepareCards,
+  generateDeck,
+  makeDeckUrl,
+  TOWER_TROOPS,
+};
