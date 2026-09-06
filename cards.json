@@ -1170,19 +1170,6 @@
         "is_evolved": false
     },
     {
-        "key": "party-hut",
-        "name": "Party Hut",
-        "sc_key": "GoblinPartyHut",
-        "elixir": 5,
-        "type": "Building",
-        "rarity": "Legendary",
-        "arena": 10,
-        "description": "Building that spawns Spear Goblins. Don't look inside... you don't want to see how they're made.",
-        "id": 27000014,
-        "evolved_spells_sc_key": "",
-        "is_evolved": false
-    },
-    {
         "key": "fireball",
         "name": "Fireball",
         "sc_key": "Fireball",
