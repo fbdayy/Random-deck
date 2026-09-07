@@ -5,210 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Clash Royale — генератор колод</title>
   <meta name="description" content="Случайный генератор колод Clash Royale" />
-  <style>
-    :root {
-      color-scheme: dark;
-      --bg: #090d18;
-      --panel: #11182a;
-      --panel2: #18223a;
-      --text: #f4f7ff;
-      --muted: #9ca9c7;
-      --accent: #67a6ff;
-      --accent2: #8c6cff;
-      --danger: #ff6b7a;
-      --border: rgba(255,255,255,.09);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh; color: var(--text);
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(103,166,255,.18), transparent 32rem),
-        radial-gradient(circle at 90% 20%, rgba(140,108,255,.14), transparent 28rem),
-        var(--bg);
-    }
-    .wrap { width: min(1050px, calc(100% - 32px)); margin: 0 auto; padding: 56px 0 48px; }
-    header { text-align: center; margin-bottom: 34px; }
-    h1 { margin: 0 0 10px; font-size: clamp(32px, 6vw, 56px); line-height: 1.02; }
-    header p { color: var(--muted); margin: 0 auto; max-width: 650px; line-height: 1.6; }
-    .panel {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.025));
-      border: 1px solid var(--border); border-radius: 24px; padding: 24px;
-      box-shadow: 0 20px 70px rgba(0,0,0,.24);
-    }
-    /* ===== Волна ===== */
-    .panel::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 500%;
-      height: 500%;
-      background: linear-gradient(135deg, rgba(0, 255, 100, 0), rgba(0, 255, 100, 0.05), rgba(0, 255, 100, 0));
-      pointer-events: none;
-      opacity: 0;
-      transition: none;
-    }
-    .panel.wave-active::after {
-      opacity: 1;
-      animation: waveSlide 1s forwards;
-    }
-    @keyframes waveSlide {
-      0% { transform: translate(-100%, -100%); }
-      100% { transform: translate(50%, 50%); }
-    }
-    /* ============== */
-    .actions {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-    button, .link {
-      border: 0;
-      border-radius: 14px;
-      padding: 13px 18px;
-      font: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 220px;
-    }
-    button:focus, .link:focus { outline: none; }
-    button:focus-visible, .link:focus-visible { outline: 2px solid var(--accent); }
-    button, .link { -webkit-tap-highlight-color: transparent; }
-
-    #generate {
-      color: white;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      transition: transform 0.2s, opacity 0.25s ease;
-    }
-    #generate:hover:not(.no-hover) { opacity: 0.75; }
-    #generate.pressed {
-      transform: scale(0.95);
-      opacity: 1;
-      transition: transform 0.2s ease, opacity 0s;
-    }
-    #generate:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    #generate:disabled:hover { opacity: 0.5; }
-
-    .link {
-      color: var(--text);
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      transition: background 0.2s, opacity 0.25s ease;
-    }
-    .link:hover { background: var(--panel); opacity: 0.75; }
-
-    .options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px 30px;
-      justify-content: center;
-      background: rgba(255,255,255,.03);
-      border-radius: 14px;
-      padding: 12px 20px;
-      margin-bottom: 0;
-      border: 1px solid var(--border);
-    }
-    .options label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      color: var(--muted);
-      user-select: none;
-    }
-    .options input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-
-    .status {
-      text-align: center;
-      min-height: 24px;
-      margin: 0;
-      color: var(--muted);
-      font-weight: 400;
-    }
-    .status.error { color: var(--danger); }
-
-    .deck {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-top: 8px;
-    }
-    .card {
-      min-height: 100px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      position: relative;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: cardAppear 0.4s ease forwards;
-    }
-    .card:nth-child(1) { animation-delay: 0.05s; }
-    .card:nth-child(2) { animation-delay: 0.10s; }
-    .card:nth-child(3) { animation-delay: 0.15s; }
-    .card:nth-child(4) { animation-delay: 0.20s; }
-    .card:nth-child(5) { animation-delay: 0.25s; }
-    .card:nth-child(6) { animation-delay: 0.30s; }
-    .card:nth-child(7) { animation-delay: 0.35s; }
-    .card:nth-child(8) { animation-delay: 0.40s; }
-
-    @keyframes cardAppear {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .number { color:var(--muted); font-size:11px; }
-    .name { font-size:15px; font-weight:800; margin-top:16px; }
-    .id { color:var(--muted); font-size:11px; margin-top:6px; }
-    .tower {
-      margin-top:18px;
-      padding:16px;
-      border-radius:16px;
-      background:rgba(255,255,255,.035);
-      text-align:center;
-      opacity: 0;
-      animation: cardAppear 0.4s ease 0.45s forwards;
-    }
-    .tower strong { display:block; margin-bottom:5px; }
-
-    .deck.hidden { display: none; }
-    .tower.hidden { display: none; }
-
-    @media (max-width: 720px) {
-      .deck { grid-template-columns: repeat(2, 1fr); }
-      .wrap { width:min(100% - 20px, 1050px); padding-top:30px; }
-      .panel { padding:16px; border-radius:18px; }
-      .options { flex-direction: column; align-items: center; gap: 10px; }
-      button, .link { min-width: 100%; }
-      .actions { gap: 8px; }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="wrap">
     <header>
-      <h1>🎲 Случайная колода</h1>
-      <p>Это полностью сгенерированный нейросетью генератор абсолютно случайных колод в Clash Royale без всяких правил.</p>
+      <div class="title-group">
+        <h1>🎲 Случайная колода</h1>
+        <p>Это полностью сгенерированный нейросетью генератор абсолютно случайных колод в Clash Royale без всяких правил.</p>
+      </div>
+      <div class="header-controls">
+        <a href="cards.html" class="nav-link">изменить данные о картах и башнях</a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+      </div>
     </header>
 
     <section class="panel" id="mainPanel">
@@ -220,6 +29,12 @@
       <div class="options">
         <label><input type="checkbox" id="showDeck" checked> Показывать колоду</label>
         <label><input type="checkbox" id="showTower" checked> Показывать башню</label>
+        <label><input type="checkbox" id="evoSort"> Сортировка по способностям</label>
+      </div>
+
+      <div class="reset-actions">
+        <button type="button" id="resetEvo" class="btn-reset">Сбросить данные об эволюциях</button>
+        <button type="button" id="resetHeroism" class="btn-reset">Сбросить данные о героизме</button>
       </div>
 
       <div id="status" class="status">Загрузка базы карт…</div>
@@ -230,131 +45,339 @@
 
   <script src="generator.js"></script>
   <script>
-    const api = window.ClashRoyaleGenerator;
-    const generateBtn = document.getElementById("generate");
-    const deckLink = document.getElementById("deckLink");
-    const statusEl = document.getElementById("status");
-    const deckEl = document.getElementById("deck");
-    const towerEl = document.getElementById("tower");
-    const panel = document.getElementById("mainPanel");
+    (function() {
+      const api = window.ClashRoyaleGenerator;
+      const generateBtn = document.getElementById("generate");
+      const deckLink = document.getElementById("deckLink");
+      const statusEl = document.getElementById("status");
+      const deckEl = document.getElementById("deck");
+      const towerEl = document.getElementById("tower");
+      const panel = document.getElementById("mainPanel");
+      const themeToggle = document.getElementById("themeToggle");
 
-    const showDeckCb = document.getElementById("showDeck");
-    const showTowerCb = document.getElementById("showTower");
+      const showDeckCb = document.getElementById("showDeck");
+      const showTowerCb = document.getElementById("showTower");
+      const evoSortCb = document.getElementById("evoSort");
 
-    let cards = [];
-    let currentUrl = "";
-    let pressTimer = null;
+      const resetEvoBtn = document.getElementById("resetEvo");
+      const resetHeroismBtn = document.getElementById("resetHeroism");
 
-    function renderDeck(deck) {
-      deckEl.innerHTML = deck.map((card, i) => `
-        <article class="card">
-          <div class="number">СЛОТ ${i + 1}</div>
-          <div class="name">${escapeHtml(card.name)}</div>
-          <div class="id">ID: ${escapeHtml(String(card.id))}</div>
-        </article>
-      `).join("");
-    }
+      let cards = [];
+      let currentUrl = "";
+      let pressTimer = null;
 
-    function escapeHtml(value) {
-      return value.replace(/[&<>"']/g, c => ({
-        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
-      }[c]));
-    }
+      let originalDeck = null;
+      let currentDeck = null;
+      let currentTowerName = "";
+      let currentTowerId = null;
 
-    function updateVisibility() {
-      const showDeck = showDeckCb.checked;
-      const showTower = showTowerCb.checked;
-
-      deckEl.classList.toggle('hidden', !showDeck);
-      towerEl.classList.toggle('hidden', !showTower);
-      // ID всегда показываются
-      deckEl.classList.remove('hide-ids');
-    }
-
-    showDeckCb.addEventListener('change', updateVisibility);
-    showTowerCb.addEventListener('change', updateVisibility);
-
-    function animatePress() {
-      if (pressTimer) {
-        clearTimeout(pressTimer);
-        generateBtn.classList.remove('pressed');
+      function setTheme(theme) {
+        const isLight = theme === 'light';
+        document.body.classList.toggle('light-theme', isLight);
+        themeToggle.textContent = isLight ? '☀️' : '🌙';
       }
-      generateBtn.classList.add('pressed');
-      generateBtn.classList.add('no-hover');
-      pressTimer = setTimeout(() => {
-        generateBtn.classList.remove('pressed');
-        pressTimer = null;
-      }, 300);
-    }
 
-    generateBtn.addEventListener('mouseleave', function() {
-      generateBtn.classList.remove('no-hover');
-    });
+      function toggleTheme() {
+        const current = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+        const next = current === 'light' ? 'dark' : 'light';
+        setTheme(next);
+        try {
+          localStorage.setItem('cr-theme', next);
+        } catch (_) { /* ignore */ }
+      }
 
-    // Запуск волны
-    function triggerWave() {
-      panel.classList.remove('wave-active');
-      void panel.offsetWidth;
-      panel.classList.add('wave-active');
-      setTimeout(() => {
+      function loadTheme() {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('cr-theme');
+        } catch (_) { /* ignore */ }
+        if (stored) {
+          setTheme(stored);
+          return;
+        }
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        setTheme(prefersLight ? 'light' : 'dark');
+      }
+
+      themeToggle.addEventListener('click', toggleTheme);
+
+      function loadOwnedMap(storageKey) {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          return raw ? JSON.parse(raw) : {};
+        } catch (_) {
+          return {};
+        }
+      }
+
+      function saveOwnedMap(storageKey, map) {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(map));
+        } catch (_) { /* ignore */ }
+      }
+
+      let evoOwned = loadOwnedMap('cr-evo-owned');
+      let heroismOwned = loadOwnedMap('cr-heroism-owned');
+
+      function isHeroRarity(card) {
+        return String(card.rarity ?? '').toLowerCase() === 'champion';
+      }
+      function canEvolve(card) {
+        return Boolean(card.has_evolution);
+      }
+      function canHeroism(card) {
+        return Boolean(card.has_heroism);
+      }
+
+      function computeIconState(ownedMap, key, slotIndex, kind) {
+        const owned = Boolean(ownedMap[key]);
+        if (!owned) return 1;
+        let isSpecialSlot;
+        if (kind === 'heroism') {
+          isSpecialSlot = (slotIndex === 1 || slotIndex === 2);
+        } else {
+          isSpecialSlot = (slotIndex === 0 || slotIndex === 2);
+        }
+        return isSpecialSlot ? 3 : 2;
+      }
+
+      const RING = `<circle class="icon-ring" cx="18" cy="18" r="15"></circle>`;
+      
+      const HERO_SHIELD_SVG = `
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false">
+          ${RING}
+          <path class="icon-shape" d="M18 6 L28 10 L28 20 C28 28 18 32 18 32 C18 32 8 28 8 20 L8 10 Z M18 12 L22 15 L20 21 L16 21 L14 15 Z" />
+        </svg>
+      `;
+      
+      const HEROISM_STAR_SVG = `
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false">
+          ${RING}
+          <path class="icon-shape" d="M18 6 L20.9 14 L18 14 Z" />
+          <path class="icon-shape" d="M18 6 L15.1 14 L18 14 Z" />
+          <path class="icon-shape" d="M29.4 14.3 L20.9 14 L21.85 16.75 Z" />
+          <path class="icon-shape" d="M29.4 14.3 L22.8 19.5 L21.85 16.75 Z" />
+          <path class="icon-shape" d="M25.1 27.7 L22.8 19.5 L20.4 21.25 Z" />
+          <path class="icon-shape" d="M25.1 27.7 L18 23 L20.4 21.25 Z" />
+          <path class="icon-shape" d="M10.9 27.7 L18 23 L15.6 21.25 Z" />
+          <path class="icon-shape" d="M10.9 27.7 L13.2 19.5 L15.6 21.25 Z" />
+          <path class="icon-shape" d="M6.6 14.3 L13.2 19.5 L14.15 16.75 Z" />
+          <path class="icon-shape" d="M6.6 14.3 L15.1 14 L14.15 16.75 Z" />
+          <path class="icon-shape" d="M18 14 L21.85 16.75 L20.4 21.25 L15.6 21.25 L14.15 16.75 Z" />
+        </svg>
+      `;
+      
+      const EVO_AMETHYST_SVG = `
+        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false">
+          ${RING}
+          <path class="icon-shape" d="M18 7 L29 18 L18 29 L7 18 Z" />
+        </svg>
+      `;
+      
+      function buildCardIcons(card, slotIndex) {
+        const parts = [];
+      
+        if (isHeroRarity(card)) {
+          parts.push(`<span class="card-icon hero-icon" title="Герой">${HERO_SHIELD_SVG}</span>`);
+        }
+      
+        if (canEvolve(card)) {
+          const owned = Boolean(evoOwned[card.key]);
+          const state = computeIconState(evoOwned, card.key, slotIndex, 'evolution');
+          parts.push(`
+            <button type="button" class="card-icon-btn" data-kind="evolution" data-key="${escapeHtml(String(card.key ?? card.id))}" data-state="${state}"
+              aria-pressed="${owned}" aria-label="Эволюция: ${owned ? 'есть' : 'нет'}"
+              title="Отметить, есть ли у вас эволюция этой карты">
+              ${EVO_AMETHYST_SVG}
+            </button>
+          `);
+        }
+      
+        if (canHeroism(card)) {
+          const owned = Boolean(heroismOwned[card.key]);
+          const state = computeIconState(heroismOwned, card.key, slotIndex, 'heroism');
+          parts.push(`
+            <button type="button" class="card-icon-btn" data-kind="heroism" data-key="${escapeHtml(String(card.key ?? card.id))}" data-state="${state}"
+              aria-pressed="${owned}" aria-label="Героизм: ${owned ? 'есть' : 'нет'}"
+              title="Отметить, есть ли у вас героизм этой карты">
+              ${HEROISM_STAR_SVG}
+            </button>
+          `);
+        }
+      
+        if (!parts.length) return '';
+        return `<div class="card-icons">${parts.join('')}</div>`;
+      }
+
+      function renderDeck(deck) {
+        deckEl.innerHTML = deck.map((card, i) => `
+          <article class="card" data-slot-index="${i}">
+            ${buildCardIcons(card, i)}
+            <div class="number">СЛОТ ${i + 1}</div>
+            <div class="name">${escapeHtml(card.name)}</div>
+            <div class="id">ID: ${escapeHtml(String(card.id))}</div>
+          </article>
+        `).join("");
+      }
+
+      deckEl.addEventListener('click', function(e) {
+        const btn = e.target.closest('.card-icon-btn');
+        if (!btn) return;
+        const cardEl = btn.closest('.card');
+        if (!cardEl) return;
+
+        const kind = btn.dataset.kind;
+        const key = btn.dataset.key;
+
+        const map = kind === 'evolution' ? evoOwned : heroismOwned;
+        const storageKey = kind === 'evolution' ? 'cr-evo-owned' : 'cr-heroism-owned';
+
+        const owned = !map[key];
+        map[key] = owned;
+        saveOwnedMap(storageKey, map);
+
+        refreshDeck();
+      });
+
+      resetEvoBtn.addEventListener('click', function() {
+        evoOwned = {};
+        saveOwnedMap('cr-evo-owned', evoOwned);
+        refreshDeck();
+      });
+
+      resetHeroismBtn.addEventListener('click', function() {
+        heroismOwned = {};
+        saveOwnedMap('cr-heroism-owned', heroismOwned);
+        refreshDeck();
+      });
+
+      function escapeHtml(value) {
+        return value.replace(/[&<>"']/g, c => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        }[c]));
+      }
+
+      function updateVisibility() {
+        const showDeck = showDeckCb.checked;
+        const showTower = showTowerCb.checked;
+        deckEl.classList.toggle('hidden', !showDeck);
+        towerEl.classList.toggle('hidden', !showTower);
+      }
+
+      showDeckCb.addEventListener('change', updateVisibility);
+      showTowerCb.addEventListener('change', updateVisibility);
+
+      function animatePress() {
+        if (pressTimer) {
+          clearTimeout(pressTimer);
+          generateBtn.classList.remove('pressed');
+        }
+        generateBtn.classList.add('pressed');
+        generateBtn.classList.add('no-hover');
+        pressTimer = setTimeout(() => {
+          generateBtn.classList.remove('pressed');
+          pressTimer = null;
+        }, 300);
+      }
+
+      generateBtn.addEventListener('mouseleave', function() {
+        generateBtn.classList.remove('no-hover');
+      });
+
+      function triggerWave() {
         panel.classList.remove('wave-active');
-      }, 700);
-    }
+        void panel.offsetWidth;
+        panel.classList.add('wave-active');
+        setTimeout(() => {
+          panel.classList.remove('wave-active');
+        }, 700);
+      }
 
-    async function generate() {
-      try {
-        generateBtn.disabled = true;
-        statusEl.classList.remove('error');
-        statusEl.textContent = "Генерирую…";
+      function refreshDeck() {
+        if (!originalDeck) return;
 
-        // Перезапускаем волну при каждом нажатии
-        triggerWave();
+        const sorted = evoSortCb.checked 
+          ? api.applyEvoSort([...originalDeck], evoOwned, heroismOwned) 
+          : [...originalDeck];
+        currentDeck = sorted;
 
-        const deck = api.generateDeck(cards);
-        const towerName = Object.keys(api.TOWER_TROOPS)[
-          Math.floor(Math.random() * Object.keys(api.TOWER_TROOPS).length)
-        ];
-        const towerId = api.TOWER_TROOPS[towerName];
-        currentUrl = api.makeDeckUrl(deck, towerId);
-
-        renderDeck(deck);
-        towerEl.hidden = false;
-        towerEl.innerHTML = `<strong>🏰 Башня: ${escapeHtml(towerName)}</strong><span>tt: ${towerId}</span>`;
-
+        currentUrl = api.makeDeckUrl(currentDeck, currentTowerId);
         deckLink.href = currentUrl;
         deckLink.style.display = "inline-flex";
 
-        statusEl.textContent = "";
-
+        renderDeck(currentDeck);
         updateVisibility();
-      } catch (error) {
-        statusEl.classList.add('error');
-        statusEl.textContent = error.message || String(error);
-        deckLink.style.display = "none";
-      } finally {
-        generateBtn.disabled = false;
       }
-    }
 
-    async function init() {
-      try {
-        const raw = await api.loadCards();
-        cards = api.prepareCards(raw);
-        statusEl.textContent = `Загружено обычных карт: ${cards.length}`;
-        await generate();
-      } catch (error) {
-        statusEl.classList.add('error');
-        statusEl.textContent = `Ошибка загрузки базы: ${error.message || error}`;
-        generateBtn.disabled = true;
+      async function generate() {
+        try {
+          generateBtn.disabled = true;
+          statusEl.classList.remove('error');
+          statusEl.textContent = "Генерирую…";
+
+          triggerWave();
+
+          let deck = api.generateDeck(cards);
+          originalDeck = deck;
+
+          const towerKeys = Object.keys(api.TOWER_TROOPS);
+          const towerName = towerKeys[Math.floor(Math.random() * towerKeys.length)];
+          const towerId = api.TOWER_TROOPS[towerName];
+          currentTowerName = towerName;
+          currentTowerId = towerId;
+
+          const sorted = evoSortCb.checked 
+            ? api.applyEvoSort([...originalDeck], evoOwned, heroismOwned) 
+            : [...originalDeck];
+          currentDeck = sorted;
+
+          currentUrl = api.makeDeckUrl(currentDeck, currentTowerId);
+          deckLink.href = currentUrl;
+          deckLink.style.display = "inline-flex";
+
+          renderDeck(currentDeck);
+          towerEl.hidden = false;
+          towerEl.innerHTML = `<strong>🏰 Башня: ${escapeHtml(towerName)}</strong><span>tt: ${towerId}</span>`;
+
+          statusEl.textContent = "";
+
+          updateVisibility();
+        } catch (error) {
+          statusEl.classList.add('error');
+          statusEl.textContent = error.message || String(error);
+          deckLink.style.display = "none";
+        } finally {
+          generateBtn.disabled = false;
+        }
       }
-    }
 
-    generateBtn.addEventListener("click", function(e) {
-      animatePress();
-      generate();
-    });
+      async function init() {
+        try {
+          const raw = await api.loadCards();
+          cards = api.prepareCards(raw);
+          statusEl.textContent = `Загружено обычных карт: ${cards.length}`;
+          await generate();
+        } catch (error) {
+          statusEl.classList.add('error');
+          statusEl.textContent = `Ошибка загрузки базы: ${error.message || error}`;
+          generateBtn.disabled = true;
+        }
+      }
 
-    init();
+      generateBtn.addEventListener("click", function(e) {
+        animatePress();
+        generate();
+      });
+
+      evoSortCb.addEventListener('change', refreshDeck);
+
+      loadTheme();
+      init();
+    })();
   </script>
 </body>
 </html>
