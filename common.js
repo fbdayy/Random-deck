@@ -45,9 +45,12 @@
     } catch (_) {}
   }
 
-  // Тема (без изменений)
+  // Тема
   function setTheme(theme) {
     const isLight = theme === 'light';
+    // Обновляем класс и на <html>, и на <body>, чтобы все проверки темы
+    // (в т.ч. на странице cards.html) видели одинаковое состояние.
+    document.documentElement.classList.toggle('light-theme', isLight);
     document.body.classList.toggle('light-theme', isLight);
     const btn = document.getElementById('themeToggle');
     if (btn) btn.textContent = isLight ? '☀️' : '🌙';
@@ -67,10 +70,17 @@
     try { localStorage.setItem('cr-theme', current === 'light' ? 'dark' : 'light'); } catch (_) {}
   }
 
-  // Состояние иконок (без изменений)
-  function computeIconState(map, key, slotIndex, kind) {
+  // Состояние иконок – теперь с учётом режима управления (cardOwned)
+  function computeIconState(map, key, slotIndex, kind, cardOwned) {
     const owned = Boolean(map[key]);
     if (!owned) return 1;
+
+    // Если передан cardOwned – это режим управления коллекцией
+    if (cardOwned !== undefined && cardOwned !== null) {
+      return cardOwned ? 3 : 2;
+    }
+
+    // Иначе режим генератора – зависит от слота
     let isSpecialSlot;
     if (kind === 'heroism') {
       isSpecialSlot = (slotIndex === 1 || slotIndex === 2);
@@ -80,8 +90,9 @@
     return isSpecialSlot ? 3 : 2;
   }
 
-  // Сборка HTML иконок для карты — добавлен параметр tournamentMode
-  function buildCardIcons(card, slotIndex = 0, evoOwned = null, heroismOwned = null, tournamentMode = false) {
+  // Сборка HTML иконок для карты
+  // Добавлен параметр cardOwned (для страницы управления)
+  function buildCardIcons(card, slotIndex = 0, evoOwned = null, heroismOwned = null, tournamentMode = false, cardOwned = null) {
     if (evoOwned === null) evoOwned = loadMap(STORAGE_KEYS.EVO);
     if (heroismOwned === null) heroismOwned = loadMap(STORAGE_KEYS.HEROISM);
 
@@ -96,15 +107,18 @@
 
     // Эволюция
     if (card.has_evolution) {
-      const owned = tournamentMode ? true : Boolean(evoOwned[key]);
-      const state = tournamentMode ? 3 : computeIconState(evoOwned, key, slotIndex, 'evolution');
+      let state;
       if (tournamentMode) {
-        // Статическая иконка (залитая)
+        state = 3;
+      } else {
+        state = computeIconState(evoOwned, key, slotIndex, 'evolution', cardOwned);
+      }
+      if (tournamentMode) {
         parts.push(`<span class="card-icon" data-kind="evolution" data-key="${escapeHtml(key)}" data-state="${state}" title="Эволюция (турнирный режим)">${EVO_AMETHYST_SVG}</span>`);
       } else {
         parts.push(`
           <button type="button" class="card-icon-btn" data-kind="evolution" data-key="${escapeHtml(key)}" data-state="${state}"
-            aria-pressed="${owned}" aria-label="Эволюция: ${owned ? 'есть' : 'нет'}"
+            aria-pressed="${Boolean(evoOwned[key])}" aria-label="Эволюция: ${evoOwned[key] ? 'есть' : 'нет'}"
             title="Отметить, есть ли у вас эволюция этой карты">
             ${EVO_AMETHYST_SVG}
           </button>
@@ -114,14 +128,18 @@
 
     // Героизм
     if (card.has_heroism) {
-      const owned = tournamentMode ? true : Boolean(heroismOwned[key]);
-      const state = tournamentMode ? 3 : computeIconState(heroismOwned, key, slotIndex, 'heroism');
+      let state;
+      if (tournamentMode) {
+        state = 3;
+      } else {
+        state = computeIconState(heroismOwned, key, slotIndex, 'heroism', cardOwned);
+      }
       if (tournamentMode) {
         parts.push(`<span class="card-icon" data-kind="heroism" data-key="${escapeHtml(key)}" data-state="${state}" title="Героизм (турнирный режим)">${HEROISM_STAR_SVG}</span>`);
       } else {
         parts.push(`
           <button type="button" class="card-icon-btn" data-kind="heroism" data-key="${escapeHtml(key)}" data-state="${state}"
-            aria-pressed="${owned}" aria-label="Героизм: ${owned ? 'есть' : 'нет'}"
+            aria-pressed="${Boolean(heroismOwned[key])}" aria-label="Героизм: ${heroismOwned[key] ? 'есть' : 'нет'}"
             title="Отметить, есть ли у вас героизм этой карты">
             ${HEROISM_STAR_SVG}
           </button>
@@ -163,7 +181,7 @@
     loadTheme,
     toggleTheme,
     computeIconState,
-    buildCardIcons,  // теперь принимает tournamentMode
+    buildCardIcons,  // теперь принимает cardOwned
     getAlwaysOwnedCards,
     getAlwaysOwnedTowers,
     getTowerRarity

@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Управление картами и башнями — Clash Royale</title>
     <meta name="description" content="Укажите, какие карты, башни, эволюции и героизмы у вас есть" />
+    <script>
+      // Применяем сохранённую тему ещё до отрисовки страницы, чтобы не было
+      // "мигания" тёмной темой перед переключением на светлую.
+      (function() {
+        try {
+          var stored = localStorage.getItem('cr-theme');
+          var isLight = stored ? stored === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+          if (isLight) document.documentElement.classList.add('light-theme');
+        } catch (e) {}
+      })();
+    </script>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -90,6 +101,9 @@
             const toast = document.getElementById('toast');
             const panel = document.querySelector('.panel');
             const saveBtn = document.getElementById('saveBtn');
+            const resetAllBtn = document.getElementById('resetAllBtn');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const themeToggle = document.getElementById('themeToggle');
 
             let allCards = [];
             let towersData = [];
@@ -100,9 +114,23 @@
             const alwaysCards = common.getAlwaysOwnedCards();
             const alwaysTowers = common.getAlwaysOwnedTowers();
 
-            // Тема
-            document.getElementById('themeToggle').addEventListener('click', common.toggleTheme);
+            // ===== Тема — используем общие функции из common.js =====
+            // Загружаем тему при старте
             common.loadTheme();
+
+            // Обновляем иконку кнопки в соответствии с текущей темой
+            function updateThemeButton() {
+                const isLight = document.documentElement.classList.contains('light-theme');
+                themeToggle.textContent = isLight ? '☀️' : '🌙';
+            }
+            updateThemeButton();
+
+            // Переключение через общую функцию
+            themeToggle.addEventListener('click', function() {
+                common.toggleTheme();
+                updateThemeButton();
+            });
+            // ===== Конец блока темы =====
 
             function escapeHtml(str) { return common.escapeHtml(str); }
 
@@ -128,14 +156,13 @@
                 toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
             }
 
-            // Анимация кнопки
-            let pressTimer = null;
+            // Анимация кнопки (общая)
             function animatePress(btn) {
-                if (pressTimer) clearTimeout(pressTimer);
+                if (btn._pressTimer) clearTimeout(btn._pressTimer);
                 btn.classList.add('pressed', 'no-hover');
-                pressTimer = setTimeout(() => {
+                btn._pressTimer = setTimeout(() => {
                     btn.classList.remove('pressed');
-                    pressTimer = null;
+                    btn._pressTimer = null;
                 }, 300);
             }
             function triggerWave() {
@@ -144,13 +171,46 @@
                 panel.classList.add('wave-active');
                 setTimeout(() => panel.classList.remove('wave-active'), 700);
             }
-            saveBtn.addEventListener('click', function(e) {
-                animatePress(this);
-                triggerWave();
+
+            // Обработчики для всех кнопок
+            function setupButton(btn, callback) {
+                btn.addEventListener('click', function(e) {
+                    animatePress(this);
+                    triggerWave();
+                    if (callback) callback();
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.classList.remove('no-hover');
+                });
+            }
+
+            setupButton(saveBtn, saveAll);
+            setupButton(resetAllBtn, function() {
+                if (!confirm('Сбросить все настройки (кроме всегда доступных карт и башен)?')) return;
+                ownedCards = new Set([...alwaysCards]);
+                ownedTowers = new Set([...alwaysTowers]);
+                evoOwned = {};
+                heroismOwned = {};
                 saveAll();
+                renderTowers();
+                renderCards();
+                updateStats();
+                showToast('🔄 Сброшены все настройки (кроме обязательных)');
             });
-            saveBtn.addEventListener('mouseleave', function() {
-                this.classList.remove('no-hover');
+            setupButton(selectAllBtn, function() {
+                // Все карты
+                allCards.forEach(c => {
+                    const key = c.key || String(c.id);
+                    if (!alwaysCards.has(key)) ownedCards.add(key);
+                });
+                // Все башни
+                towersData.forEach(t => {
+                    if (!alwaysTowers.has(t.name)) ownedTowers.add(t.name);
+                });
+                renderCards();
+                renderTowers();
+                updateStats();
+                showToast('✅ Все карты и башни найдены (кроме обязательных)');
             });
 
             // Рендеринг башен
@@ -164,8 +224,11 @@
                     const isOwned = ownedTowers.has(name) || isAlways;
                     if (isOwned) ownedCount++;
 
+                    const rarity = common.getTowerRarity(name);
+                    const rarityClass = rarity ? `rarity-${rarity.toLowerCase()}` : '';
+
                     const div = document.createElement('div');
-                    div.className = 'tower-item' + (isOwned ? '' : ' not-found');
+                    div.className = 'tower-item' + (isOwned ? '' : ' not-found') + (rarityClass ? ' ' + rarityClass : '');
                     if (isAlways) div.classList.add('always-owned');
                     div.dataset.name = name;
 
@@ -176,9 +239,8 @@
 
                     const sub = document.createElement('div');
                     sub.className = 'sub';
-                    const rarity = common.getTowerRarity(name);
-                    const rarityLabel = rarity ? `<span class="badge rarity-${rarity.toLowerCase()}">${rarity}</span>` : '';
-                    sub.innerHTML = `${rarityLabel} ID ${tower.id}`;
+                    const rarityLabel = rarity ? `<span class="badge ${rarityClass}">${rarity}</span>` : '';
+                    sub.innerHTML = `${rarityLabel} <span class="id-part">tower • ID ${tower.id}</span>`;
                     div.appendChild(sub);
 
                     if (!isAlways) {
@@ -219,7 +281,8 @@
                     if (isOwned) ownedCount++;
 
                     const div = document.createElement('div');
-                    div.className = 'card-item' + (isOwned ? '' : ' not-found');
+                    const rarityClass = cardRarity ? `rarity-${cardRarity}` : '';
+                    div.className = 'card-item' + (isOwned ? '' : ' not-found') + (rarityClass ? ' ' + rarityClass : '');
                     if (isAlways) div.classList.add('always-owned');
                     div.dataset.key = key;
 
@@ -230,14 +293,13 @@
                     nameEl.textContent = name;
                     const sub = document.createElement('div');
                     sub.className = 'sub';
-                    const rarityClass = cardRarity ? `rarity-${cardRarity}` : '';
                     const rarityLabel = cardRarity ? `<span class="badge ${rarityClass}">${cardRarity}</span>` : '';
-                    sub.innerHTML = `${rarityLabel} ${cardType} · ID ${card.id}`;
+                    sub.innerHTML = `${rarityLabel} <span class="id-part">${cardType} • ID ${card.id}</span>`;
                     info.appendChild(nameEl);
                     info.appendChild(sub);
                     div.appendChild(info);
 
-                    const iconsHtml = common.buildCardIcons(card, 0, evoOwned, heroismOwned, false);
+                    const iconsHtml = common.buildCardIcons(card, 0, evoOwned, heroismOwned, false, isOwned);
                     if (iconsHtml) {
                         const wrapper = document.createElement('div');
                         wrapper.innerHTML = iconsHtml;
@@ -264,12 +326,15 @@
                     return ownedCards.has(key) || alwaysCards.has(key);
                 }).length;
                 ownedCardsCountEl.textContent = ownedCount;
-                ownedTowersCountEl.textContent = ownedTowers.size + alwaysTowers.size;
+                let towerOwned = 0;
+                towersData.forEach(t => {
+                    if (ownedTowers.has(t.name) || alwaysTowers.has(t.name)) towerOwned++;
+                });
+                ownedTowersCountEl.textContent = towerOwned;
                 totalCardsEl.textContent = allCards.length;
                 totalTowersEl.textContent = towersData.length;
             }
 
-            // Переключение карты/башни с проверкой на "всегда доступно"
             function toggleCard(key) {
                 if (alwaysCards.has(key)) {
                     showToast('🔒 Эта карта всегда доступна');
@@ -292,7 +357,6 @@
                 updateStats();
             }
 
-            // Обработчики кликов
             towersContainer.addEventListener('click', function(e) {
                 const item = e.target.closest('.tower-item');
                 if (!item) return;
@@ -323,36 +387,10 @@
                 updateStats();
             });
 
-            // Кнопки действий
-            document.getElementById('resetAllBtn').addEventListener('click', function() {
-                if (!confirm('Сбросить все настройки (кроме всегда доступных карт и башен)?')) return;
-                ownedCards = new Set([...alwaysCards]);
-                ownedTowers = new Set([...alwaysTowers]);
-                evoOwned = {};
-                heroismOwned = {};
-                saveAll();
-                renderTowers();
-                renderCards();
-                updateStats();
-                showToast('🔄 Сброшены все настройки (кроме обязательных)');
-            });
-
-            document.getElementById('selectAllBtn').addEventListener('click', function() {
-                allCards.forEach(c => {
-                    const key = c.key || String(c.id);
-                    if (!alwaysCards.has(key)) ownedCards.add(key);
-                });
-                renderCards();
-                updateStats();
-                showToast('✅ Все карты найдены (кроме обязательных)');
-            });
-
-            // Фильтры
             searchInput.addEventListener('input', renderCards);
             rarityFilter.addEventListener('change', renderCards);
             typeFilter.addEventListener('change', renderCards);
 
-            // Инициализация
             async function init() {
                 try {
                     const raw = await api.loadCards();

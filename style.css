@@ -12,13 +12,15 @@
   --hero-color: #ffc857;
   --evo-color: #b98bff;
   --heroism-color: #ffe066;
-  --rarity-common: #4aa3ff;
+  --rarity-common: #7ec8ff;
   --rarity-rare: #ff8c42;
-  --rarity-epic: #b473ff;
+  --rarity-epic: #d4b3ff;
   --rarity-legendary: #ffcc66;
   --rarity-champion: #ffd700;
+  --always-border: rgba(255,255,255,0.30);
 }
 
+html.light-theme,
 body.light-theme {
   color-scheme: light;
   --bg: #f2f6fc;
@@ -33,15 +35,17 @@ body.light-theme {
   --hero-color: #b8790a;
   --evo-color: #7c3aed;
   --heroism-color: #c9a300;
-  --rarity-common: #0055cc;
+  --rarity-common: #5aa8ff;
   --rarity-rare: #cc5500;
-  --rarity-epic: #6a2b99;
+  --rarity-epic: #c9a0ff;
   --rarity-legendary: #b8860b;
   --rarity-champion: #996515;
+  --always-border: rgba(0,0,0,0.30);
 }
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -50,7 +54,7 @@ body {
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg);
-  transition: background 0.3s;
+  transition: background 0.3s, color 0.3s;
 }
 
 .wrap {
@@ -68,23 +72,26 @@ header {
   justify-content: center;
   gap: 16px 24px;
 }
+header .title-group { flex: 1 1 100%; }
 
-header .title-group {
-  flex: 1 1 100%;
+/* ===== Унифицированные заголовки и подзаголовки ===== */
+header h1,
+.management .page-header .title-group h1 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  transition: color 0.3s;
 }
 
-header h1 {
-  margin: 0 0 10px;
-  font-size: clamp(32px, 6vw, 56px);
-  line-height: 1.02;
-}
-
-header p {
-  color: var(--muted);
+.title-group p {
+  max-width: 640px;
   margin: 0 auto;
-  max-width: 650px;
+  color: var(--muted);
   line-height: 1.6;
+  transition: color 0.3s;
 }
+/* ===== конец унификации ===== */
 
 .header-controls {
   display: flex;
@@ -95,7 +102,7 @@ header p {
 }
 
 .nav-link {
-  background: var(--panel2);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 40px;
   padding: 8px 16px;
@@ -103,28 +110,23 @@ header p {
   font-weight: 600;
   color: var(--text);
   text-decoration: none;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, color 0.3s, border-color 0.3s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-.nav-link:hover {
-  background: var(--panel);
-  opacity: 0.85;
-}
-.nav-link:active {
-  transform: scale(0.95);
-}
+.nav-link:hover { opacity: 0.85; }
+.nav-link:active { transform: scale(0.95); }
 
 .theme-toggle {
-  background: var(--panel2);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 40px;
   padding: 8px 16px;
   font-size: 22px;
   cursor: pointer;
   color: var(--text);
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s, transform 0.15s, color 0.3s, border-color 0.3s;
   line-height: 1;
   flex-shrink: 0;
   min-width: auto;
@@ -132,25 +134,22 @@ header p {
   align-items: center;
   justify-content: center;
 }
-.theme-toggle:hover {
-  background: var(--panel);
-}
-.theme-toggle:active {
-  transform: scale(0.92);
-}
+.theme-toggle:hover { background: var(--panel); }
+.theme-toggle:active { transform: scale(0.92); }
 
 .panel {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(255, 255, 255, .055), rgba(255, 255, 255, .025));
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 20px 70px rgba(0, 0, 0, .24);
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
+html.light-theme .panel,
 body.light-theme .panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .8), rgba(255, 255, 255, .6));
+  background: var(--panel);
   box-shadow: 0 20px 70px rgba(0, 0, 0, .06);
 }
 
@@ -161,7 +160,7 @@ body.light-theme .panel {
   left: 0;
   width: 500%;
   height: 500%;
-  background: linear-gradient(135deg, rgba(0, 255, 100, 0), rgba(0, 255, 100, 0.05), rgba(0, 255, 100, 0));
+  background: linear-gradient(135deg, rgba(0, 255, 100, 0), rgba(0, 255, 100, 0.15), rgba(0, 255, 100, 0));
   pointer-events: none;
   opacity: 0;
   transition: none;
@@ -170,13 +169,13 @@ body.light-theme .panel {
   opacity: 1;
   animation: waveSlide 1s forwards;
 }
+html.light-theme .panel.wave-active::after,
+body.light-theme .panel.wave-active::after {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0), rgba(60, 60, 180, 0.1), rgba(255, 0, 0, 0));
+}
 @keyframes waveSlide {
-  0% {
-    transform: translate(-100%, -100%);
-  }
-  100% {
-    transform: translate(50%, 50%);
-  }
+  0% { transform: translate(-100%, -100%); }
+  100% { transform: translate(50%, 50%); }
 }
 
 .actions {
@@ -188,8 +187,14 @@ body.light-theme .panel {
   margin-bottom: 16px;
 }
 
-button,
-.link {
+button, .link, .card-item, .tower-item, .card-icon-btn {
+  outline: none;
+}
+button:focus-visible, .link:focus-visible, .card-item:focus-visible, .tower-item:focus-visible, .card-icon-btn:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
+button, .link {
   border: 0;
   border-radius: 14px;
   padding: 13px 18px;
@@ -201,20 +206,10 @@ button,
   align-items: center;
   justify-content: center;
   min-width: 220px;
-  transition: background 0.2s, opacity 0.25s ease, transform 0.15s, box-shadow 0.2s;
+  transition: background 0.2s, opacity 0.25s ease, transform 0.15s, box-shadow 0.2s, color 0.3s, border-color 0.3s;
 }
-button:focus,
-.link:focus {
-  outline: none;
-}
-button:focus-visible,
-.link:focus-visible {
-  outline: 2px solid var(--accent);
-}
-button,
-.link {
-  -webkit-tap-highlight-color: transparent;
-}
+button:focus-visible, .link:focus-visible { outline: 2px solid var(--accent); }
+button, .link { -webkit-tap-highlight-color: transparent; }
 
 #generate {
   color: white;
@@ -235,36 +230,29 @@ button,
   cursor: not-allowed;
   box-shadow: none;
 }
-#generate:disabled:hover {
-  opacity: 0.5;
-  box-shadow: none;
-}
+#generate:disabled:hover { opacity: 0.5; box-shadow: none; }
 
 .link {
   color: var(--text);
-  background: var(--panel2);
+  background: var(--panel);
   border: 1px solid var(--border);
 }
-.link:hover {
-  background: var(--panel);
-  opacity: 0.75;
-}
+.link:hover { opacity: 0.75; }
 
 .options {
   display: flex;
   flex-wrap: wrap;
   gap: 20px 30px;
   justify-content: flex-start;
-  background: rgba(255, 255, 255, .03);
+  background: var(--panel);
   border-radius: 14px;
   padding: 12px 20px;
   margin-bottom: 0;
   border: 1px solid var(--border);
   transition: background 0.3s, border-color 0.3s;
 }
-body.light-theme .options {
-  background: rgba(0, 0, 0, .02);
-}
+html.light-theme .options,
+body.light-theme .options { background: var(--panel); }
 
 .options label {
   display: flex;
@@ -274,6 +262,7 @@ body.light-theme .options {
   cursor: pointer;
   color: var(--muted);
   user-select: none;
+  transition: color 0.3s;
 }
 .options input[type="checkbox"] {
   width: 18px;
@@ -291,7 +280,7 @@ body.light-theme .options {
 }
 
 .btn-reset {
-  background: rgba(255, 255, 255, .04);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 8px 14px;
@@ -300,18 +289,12 @@ body.light-theme .options {
   color: var(--muted);
   min-width: auto;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.3s;
 }
-body.light-theme .btn-reset {
-  background: rgba(0, 0, 0, .03);
-}
-.btn-reset:hover {
-  background: var(--panel2);
-  color: var(--text);
-}
-.btn-reset:active {
-  transform: scale(0.96);
-}
+html.light-theme .btn-reset,
+body.light-theme .btn-reset { background: var(--panel); }
+.btn-reset:hover { color: var(--text); }
+.btn-reset:active { transform: scale(0.96); }
 
 .status {
   text-align: center;
@@ -319,10 +302,9 @@ body.light-theme .btn-reset {
   margin: 12px 0 0;
   color: var(--muted);
   font-weight: 400;
+  transition: color 0.3s;
 }
-.status.error {
-  color: var(--danger);
-}
+.status.error { color: var(--danger); }
 
 .deck {
   display: grid;
@@ -342,7 +324,11 @@ body.light-theme .btn-reset {
   opacity: 0;
   transform: translateY(20px);
   animation: cardAppear 0.4s ease forwards;
-  transition: background 0.3s, border-color 0.3s;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 .card:nth-child(1) { animation-delay: 0.05s; }
 .card:nth-child(2) { animation-delay: 0.10s; }
@@ -354,19 +340,14 @@ body.light-theme .btn-reset {
 .card:nth-child(8) { animation-delay: 0.40s; }
 
 @keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .number {
   color: var(--muted);
   font-size: 11px;
+  transition: color 0.3s;
 }
 .name {
   font-size: 15px;
@@ -378,6 +359,8 @@ body.light-theme .btn-reset {
   color: var(--muted);
   font-size: 11px;
   margin-top: 6px;
+  transition: color 0.3s;
+  text-align: center;
 }
 
 .card-icons {
@@ -403,32 +386,21 @@ body.light-theme .btn-reset {
   display: flex;
   align-items: center;
   justify-content: center;
-  -webkit-tap-highlight-color: transparent;
   flex-shrink: 0;
 }
 .card-icon-btn {
   cursor: pointer;
   transition: transform .15s;
 }
-.card-icon-btn:hover {
-  transform: scale(1.1);
-}
-.card-icon-btn:active {
-  transform: scale(0.88);
-}
-.card-icon-btn:focus {
-  outline: none;
-}
-.card-icon-btn:focus-visible svg {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 50%;
-}
+.card-icon-btn:hover { transform: scale(1.1); }
+.card-icon-btn:active { transform: scale(0.88); }
+
 .card-icon svg,
 .card-icon-btn svg {
   width: 100%;
   height: 100%;
   overflow: visible;
+  display: block;
 }
 
 .icon-ring {
@@ -436,72 +408,49 @@ body.light-theme .btn-reset {
   stroke-width: 1.6;
   transition: fill .2s, stroke-width .2s;
 }
-body.light-theme .icon-ring {
-  fill: rgba(0, 0, 0, .03);
-}
-.icon-shape {
-  fill-opacity: 0;
-  transition: fill-opacity .2s;
-}
+html.light-theme .icon-ring,
+body.light-theme .icon-ring { fill: var(--panel); }
+.icon-shape { fill-opacity: 0; transition: fill-opacity .2s; }
 
 .hero-icon .icon-ring { stroke: var(--hero-color); }
 .hero-icon .icon-shape { fill: var(--hero-color); fill-opacity: 1; }
 
 .card-icon-btn[data-kind="evolution"] .icon-ring { stroke: var(--evo-color); }
 .card-icon-btn[data-kind="evolution"] .icon-shape { fill: var(--evo-color); }
+.card-icon-btn[data-state="1"] .icon-shape { fill-opacity: 0; }
+.card-icon-btn[data-state="2"] .icon-shape { fill-opacity: .4; }
+.card-icon-btn[data-state="3"] .icon-shape { fill-opacity: 1; }
+.card-icon-btn[data-state="3"] .icon-ring { stroke-width: 2; }
 
-.card-icon-btn[data-kind="heroism"] .icon-ring {
-  stroke: var(--heroism-color);
-}
-.card-icon-btn[data-kind="heroism"] .icon-shape {
-  fill: var(--heroism-color);
-  fill-opacity: 1;
-}
-
-.card-icon-btn[data-state="1"] .icon-shape {
-  fill-opacity: 0;
-}
-.card-icon-btn[data-state="2"] .icon-shape {
-  fill-opacity: .4;
-}
-.card-icon-btn[data-state="3"] .icon-shape {
-  fill-opacity: 1;
-}
-.card-icon-btn[data-state="3"] .icon-ring {
-  stroke-width: 2;
-}
+.card-icon-btn[data-kind="heroism"] .icon-ring { stroke: var(--heroism-color); }
+.card-icon-btn[data-kind="heroism"] .icon-shape { fill: var(--heroism-color); }
+.card-icon-btn[data-kind="heroism"][data-state="1"] .icon-shape { fill-opacity: 0; }
+.card-icon-btn[data-kind="heroism"][data-state="2"] .icon-shape { fill-opacity: .4; }
+.card-icon-btn[data-kind="heroism"][data-state="3"] .icon-shape { fill-opacity: 1; }
+.card-icon-btn[data-kind="heroism"][data-state="3"] .icon-ring { stroke-width: 2; }
 
 .tower {
   margin-top: 18px;
   padding: 16px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, .035);
+  background: var(--panel);
+  border: 1px solid var(--border);
   text-align: center;
   opacity: 0;
-  animation: cardAppear 0.4s ease 0.45s forwards;
-  transition: background 0.3s;
+  animation: cardAppear 0.4s ease 0.225s forwards;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
-body.light-theme .tower {
-  background: rgba(0, 0, 0, .03);
-}
-.tower strong {
-  display: block;
-  margin-bottom: 5px;
-}
+html.light-theme .tower,
+body.light-theme .tower { background: var(--panel); }
+.tower strong { display: block; margin-bottom: 5px; }
+.tower .id { display: block; text-align: center; }
 
-.deck.hidden {
-  display: none;
-}
-.tower.hidden {
-  display: none;
-}
+.deck.hidden { display: none; }
+.tower.hidden { display: none; }
 
 /* ===== Стили для страницы управления коллекцией (cards.html) ===== */
 
-.management {
-  max-width: 1100px;
-  margin: 0 auto;
-}
+.management { max-width: 1100px; margin: 0 auto; }
 
 .management .page-header {
   display: flex;
@@ -511,37 +460,16 @@ body.light-theme .tower {
   margin-bottom: 28px;
 }
 
-.management .page-header .title-group h1 {
-  font-size: clamp(32px, 6vw, 56px);
-  margin: 0 0 4px;
-  letter-spacing: -0.02em;
-}
-
-.management .page-header .title-group p {
-  color: var(--muted);
-  margin: 0;
-  font-size: 15px;
-}
-
-.management .page-header .header-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
 .management .panel {
   padding: 28px 30px 32px;
   border-radius: 28px;
-  background: var(--panel-bg);
+  background: var(--panel);
   backdrop-filter: blur(2px);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-panel);
+  box-shadow: 0 20px 70px rgba(0,0,0,0.24);
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Фильтры — фон теперь как у карт (белый в светлой теме) */
 .management .filters {
   display: flex;
   flex-wrap: wrap;
@@ -551,20 +479,21 @@ body.light-theme .tower {
   margin-bottom: 18px;
   padding: 12px 16px;
   border-radius: 16px;
-  background: var(--panel);  /* изменено с panel2 на panel */
+  background: var(--panel);
   border: 1px solid var(--border);
+  transition: background 0.3s, border-color 0.3s;
 }
 
 .management .filters input,
 .management .filters select {
-  background: var(--bg);
+  background: var(--panel);
   border: 1px solid var(--border);
   color: var(--text);
   border-radius: 10px;
   padding: 8px 14px;
   font-size: 14px;
   min-width: 140px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.3s, color 0.3s;
   font-family: inherit;
 }
 
@@ -583,14 +512,12 @@ body.light-theme .tower {
   background-position: right 10px center;
   padding-right: 30px;
 }
+html.light-theme .management .filters select,
 body.light-theme .management .filters select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a5a72' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
 }
-.management .filters select option {
-  background: var(--panel);
-}
+.management .filters select option { background: var(--panel); }
 
-/* Статистика — фон как у карт */
 .management .stats {
   display: flex;
   flex-direction: column;
@@ -607,7 +534,7 @@ body.light-theme .management .filters select {
 }
 
 .management .stats .stats-row span {
-  background: var(--panel);  /* изменено с panel2 на panel */
+  background: var(--panel);
   padding: 6px 16px;
   border-radius: 30px;
   border: 1px solid var(--border);
@@ -620,14 +547,15 @@ body.light-theme .management .filters select {
   color: var(--muted);
   flex: 1 1 0;
   min-width: 140px;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
 }
 
 .management .stats .stats-row span strong {
   color: var(--text);
   font-weight: 700;
+  transition: color 0.3s;
 }
 
-/* Кнопки действий — фон уже panel, оставляем */
 .management .actions-bar {
   display: flex;
   flex-wrap: wrap;
@@ -646,7 +574,7 @@ body.light-theme .management .filters select {
   cursor: pointer;
   background: var(--panel);
   color: var(--text);
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s, opacity 0.2s, color 0.3s, border-color 0.3s;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -654,7 +582,7 @@ body.light-theme .management .filters select {
 }
 
 .management .actions-bar button:hover {
-  background: var(--panel2);
+  background: var(--panel);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -664,23 +592,15 @@ body.light-theme .management .filters select {
   transform: scale(0.95);
 }
 
-/* Кнопка "Сбросить всё" – красная */
 #resetAllBtn {
   background: var(--danger);
   color: #fff;
   border-color: var(--danger);
 }
-#resetAllBtn:hover {
-  background: var(--danger);
-  opacity: 0.8;
-}
+#resetAllBtn:hover { opacity: 0.8; }
 #resetAllBtn:active,
-#resetAllBtn:focus {
-  background: var(--danger);
-  opacity: 0.9;
-}
+#resetAllBtn:focus { opacity: 0.9; }
 
-/* Основная кнопка "Сохранить" остаётся градиентной */
 .management .actions-bar .primary {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: #fff;
@@ -697,9 +617,7 @@ body.light-theme .management .filters select {
   opacity: 1;
   transition: transform 0.2s ease, opacity 0s;
 }
-.management .actions-bar .primary.no-hover:hover {
-  opacity: 1;
-}
+.management .actions-bar .primary.no-hover:hover { opacity: 1; }
 .management .actions-bar .primary:active,
 .management .actions-bar .primary:focus {
   background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -714,13 +632,10 @@ body.light-theme .management .filters select {
   align-items: center;
   gap: 8px;
   letter-spacing: -0.01em;
+  transition: color 0.3s;
 }
+.management .section-title:first-of-type { margin-top: 4px; }
 
-.management .section-title:first-of-type {
-  margin-top: 4px;
-}
-
-/* Башни — в один столбец */
 .management .towers-grid {
   display: flex;
   flex-direction: column;
@@ -744,9 +659,6 @@ body.light-theme .management .filters select {
   width: 100%;
 }
 
-.tower-item:focus {
-  outline: none;
-}
 .tower-item:focus-visible {
   outline: 2px solid var(--accent);
 }
@@ -767,9 +679,22 @@ body.light-theme .management .filters select {
   font-size: 12px;
   color: var(--muted);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-right: 100px;
 }
 
-/* Состояние "не найдено" для карт и башен */
+.tower-item .sub .badge {
+  flex-shrink: 0;
+}
+
+.tower-item .sub .id-part {
+  margin-left: auto;
+  text-align: right;
+}
+
 .card-item.not-found,
 .tower-item.not-found {
   opacity: 0.5;
@@ -800,14 +725,12 @@ body.light-theme .management .filters select {
 }
 
 .card-item.not-found .card-icons,
-.tower-item.not-found .card-icons {
-  z-index: 2;
-}
+.tower-item.not-found .card-icons { z-index: 2; }
 
-/* Always-owned теперь выглядит как обычная owned карта (фон и бордер одинаковые) */
 .always-owned {
   opacity: 1 !important;
   cursor: default !important;
+  border-color: var(--always-border) !important;
 }
 
 .management .cards-grid {
@@ -829,6 +752,10 @@ body.light-theme .management .filters select {
   position: relative;
 }
 
+.management .card-item:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
 .management .card-item:hover:not(.always-owned) {
   background: var(--panel);
   border-color: rgba(103, 166, 255, 0.2);
@@ -837,6 +764,7 @@ body.light-theme .management .filters select {
 
 .management .card-item .info {
   flex: 1;
+  padding-right: 100px;
   min-width: 0;
 }
 
@@ -852,19 +780,22 @@ body.light-theme .management .filters select {
   font-size: 12px;
   color: var(--muted);
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
+  align-items: center;
+  gap: 8px;
   margin-top: 1px;
   line-height: 1.4;
+  width: 100%;
 }
 
-.badge.rarity-common { color: var(--rarity-common); }
-.badge.rarity-rare { color: var(--rarity-rare); }
-.badge.rarity-epic { color: var(--rarity-epic); }
-.badge.rarity-legendary { color: var(--rarity-legendary); }
-.badge.rarity-champion { color: var(--rarity-champion); }
+.management .card-item .info .sub .badge { flex-shrink: 0; }
 
-.management .card-item .info .sub .badge {
+.management .card-item .info .sub .id-part {
+  margin-left: auto;
+  text-align: right;
+  padding-right: 8px;
+}
+
+.badge {
   display: inline-block;
   padding: 0 8px;
   border-radius: 20px;
@@ -873,28 +804,58 @@ body.light-theme .management .filters select {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  transition: color 0.2s;
+  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  border: 1px solid currentColor;
+  line-height: 1.6;
+  vertical-align: middle;
 }
 
+.badge.rarity-common { color: var(--rarity-common); }
+.badge.rarity-rare { color: var(--rarity-rare); }
+.badge.rarity-epic { color: var(--rarity-epic); }
+.badge.rarity-legendary { color: var(--rarity-legendary); }
+.badge.rarity-champion { color: var(--rarity-champion); }
+
 .management .card-item .card-icons {
-  position: relative;
-  top: auto;
-  right: auto;
-  flex-shrink: 0;
-  margin-left: 4px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
 }
 
 .management .card-item .card-icons .card-icon-btn,
 .management .card-item .card-icons .card-icon {
   width: 28px;
   height: 28px;
+  min-width: 28px;
+  visibility: visible;
+  opacity: 1;
 }
 
-.management .card-item .card-icons {
-  gap: 6px;
+.management .card-item .card-icons .card-icon-btn[data-kind="evolution"] .icon-ring {
+  stroke: var(--evo-color) !important;
+}
+.management .card-item .card-icons .card-icon-btn[data-kind="evolution"] .icon-shape {
+  fill: var(--evo-color) !important;
+}
+.management .card-item .card-icons .card-icon-btn[data-kind="heroism"] .icon-ring {
+  stroke: var(--heroism-color) !important;
+}
+.management .card-item .card-icons .card-icon-btn[data-kind="heroism"] .icon-shape {
+  fill: var(--heroism-color) !important;
+}
+.management .card-item .card-icons .hero-icon .icon-ring {
+  stroke: var(--hero-color) !important;
+}
+.management .card-item .card-icons .hero-icon .icon-shape {
+  fill: var(--hero-color) !important;
+  fill-opacity: 1 !important;
 }
 
-/* Toast */
 .management .toast {
   position: fixed;
   bottom: 30px;
@@ -908,18 +869,85 @@ body.light-theme .management .filters select {
   font-size: 15px;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.35);
   opacity: 0;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.35s ease, transform 0.35s ease, background 0.3s, border-color 0.3s, color 0.3s;
   pointer-events: none;
   z-index: 999;
   backdrop-filter: blur(8px);
 }
-
 .management .toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-/* ===== Адаптив ===== */
+/* ===== Стили для отображения редкостей в светлой теме ===== */
+html.light-theme .card-item.rarity-common,
+html.light-theme .tower-item.rarity-common {
+  background: #e8f4ff;
+  border-color: #5aa8ff;
+}
+html.light-theme .card-item.rarity-rare,
+html.light-theme .tower-item.rarity-rare {
+  background: #fff0e6;
+  border-color: #cc5500;
+}
+html.light-theme .card-item.rarity-epic,
+html.light-theme .tower-item.rarity-epic {
+  background: #f3edff;
+  border-color: #c9a0ff;
+}
+html.light-theme .card-item.rarity-legendary,
+html.light-theme .tower-item.rarity-legendary {
+  background: #fff8e0;
+  border-color: #b8860b;
+}
+html.light-theme .card-item.rarity-champion,
+html.light-theme .tower-item.rarity-champion {
+  background: #fff2d6;
+  border-color: #996515;
+}
+
+html.light-theme .card-item.rarity-common .badge.rarity-common,
+html.light-theme .tower-item.rarity-common .badge.rarity-common {
+  background: rgba(90, 168, 255, 0.25);
+  border-color: #5aa8ff;
+  color: #2a6bb0;
+}
+html.light-theme .card-item.rarity-rare .badge.rarity-rare,
+html.light-theme .tower-item.rarity-rare .badge.rarity-rare {
+  background: rgba(204, 85, 0, 0.2);
+  border-color: #cc5500;
+  color: #994000;
+}
+html.light-theme .card-item.rarity-epic .badge.rarity-epic,
+html.light-theme .tower-item.rarity-epic .badge.rarity-epic {
+  background: rgba(201, 160, 255, 0.25);
+  border-color: #c9a0ff;
+  color: #7a4bb0;
+}
+html.light-theme .card-item.rarity-legendary .badge.rarity-legendary,
+html.light-theme .tower-item.rarity-legendary .badge.rarity-legendary {
+  background: rgba(184, 134, 11, 0.2);
+  border-color: #b8860b;
+  color: #8a6508;
+}
+html.light-theme .card-item.rarity-champion .badge.rarity-champion,
+html.light-theme .tower-item.rarity-champion .badge.rarity-champion {
+  background: rgba(153, 101, 21, 0.2);
+  border-color: #996515;
+  color: #7a4f10;
+}
+
+/* Для карточек и башен в состоянии "не найдено" переопределяем фон, чтобы не скрывать редкость */
+html.light-theme .card-item.not-found,
+html.light-theme .tower-item.not-found {
+  background: rgba(255, 80, 80, 0.15) !important;
+  border-color: var(--danger) !important;
+}
+html.light-theme .card-item.not-found .badge,
+html.light-theme .tower-item.not-found .badge {
+  opacity: 0.7;
+}
+
 @media (max-width: 720px) {
   .deck {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -952,8 +980,7 @@ body.light-theme .management .filters select {
   .btn-reset {
     width: 100%;
   }
-  button,
-  .link {
+  button, .link {
     min-width: 100%;
   }
   .actions {
@@ -988,12 +1015,6 @@ body.light-theme .management .filters select {
     min-width: 0;
     width: 100%;
   }
-  .management .filters label {
-    white-space: normal;
-  }
-  .management .stats {
-    gap: 6px;
-  }
   .management .stats .stats-row {
     flex-direction: row;
     flex-wrap: wrap;
@@ -1007,9 +1028,6 @@ body.light-theme .management .filters select {
     padding: 6px 14px;
     font-size: 13px;
   }
-  .management .page-header .title-group h1 {
-    font-size: 26px;
-  }
   .tower-item {
     padding: 12px 14px;
   }
@@ -1017,5 +1035,11 @@ body.light-theme .management .filters select {
   .tower-item.not-found::after {
     font-size: 12px;
     padding: 3px 10px;
+  }
+  .management .card-item .info {
+    padding-right: 70px;
+  }
+  .tower-item .sub {
+    padding-right: 70px;
   }
 }

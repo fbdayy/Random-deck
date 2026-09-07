@@ -5,14 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Clash Royale — генератор колод</title>
   <meta name="description" content="Случайный генератор колод Clash Royale" />
+  <script>
+    // Применяем сохранённую тему ещё до отрисовки страницы, чтобы не было
+    // "мигания" тёмной темой перед переключением на светлую.
+    (function() {
+      try {
+        var stored = localStorage.getItem('cr-theme');
+        var isLight = stored ? stored === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+        if (isLight) document.documentElement.classList.add('light-theme');
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="wrap">
     <header>
       <div class="title-group">
-        <h1>🎲 Случайная колода</h1>
-        <p>Это полностью сгенерированный нейросетью генератор абсолютно случайных колод в Clash Royale без всяких правил.</p>
+        <h1>Случайная колода</h1>
+        <p>Это полностью сгенерированный нейросетью генератор абсолютно случайных колод в Clash Royale без всяких правил</p>
       </div>
       <div class="header-controls">
         <a href="cards.html" class="nav-link">Изменить данные о картах и башнях</a>
@@ -30,7 +41,6 @@
         <label><input type="checkbox" id="showDeck" checked> Показывать колоду</label>
         <label><input type="checkbox" id="showTower" checked> Показывать башню</label>
         <label><input type="checkbox" id="evoSort"> Сортировка по способностям</label>
-        <!-- НОВЫЙ ЧЕКБОКС -->
         <label><input type="checkbox" id="tournamentMode"> Турнирный уровень</label>
       </div>
 
@@ -88,6 +98,7 @@
       tournamentCb.addEventListener('change', function() {
         try { localStorage.setItem('cr-tournament-mode', String(tournamentCb.checked)); } catch (_) {}
         refreshDeck(); // обновить отображение иконок (перерисовать колоду)
+        updateStatusMessage();
       });
 
       // Тема
@@ -95,6 +106,25 @@
       common.loadTheme();
 
       function escapeHtml(str) { return common.escapeHtml(str); }
+
+      function getAvailableCardsCount() {
+        if (tournamentCb.checked) return allCards.length;
+        const ownedCardsSet = common.loadOwnedCards();
+        const alwaysCardsSet = common.getAlwaysOwnedCards();
+        return allCards.filter(card =>
+          ownedCardsSet.has(card.key) || alwaysCardsSet.has(card.key)
+        ).length;
+      }
+
+      function updateStatusMessage() {
+        // В турнирном режиме доступны все карты, показывать счётчик незачем
+        if (tournamentCb.checked) {
+          statusEl.textContent = '';
+          return;
+        }
+        const available = getAvailableCardsCount();
+        statusEl.textContent = `В генерации участвуют ${available}/${allCards.length} карт`;
+      }
 
       // Сброс эво/героизм
       resetEvoBtn.addEventListener('click', function() {
@@ -151,6 +181,28 @@
         refreshDeck();
       });
 
+      // Обновляет только иконки эволюции/героизма внутри уже существующих
+      // карточек, не трогая сами карточки — чтобы не запускалась заново
+      // анимация появления.
+      function updateCardIconsInPlace(deck) {
+        const tournament = tournamentCb.checked;
+        const evoForIcons = tournament ? new Proxy({}, { get: () => true }) : evoOwned;
+        const heroForIcons = tournament ? new Proxy({}, { get: () => true }) : heroismOwned;
+
+        deck.forEach((card, i) => {
+          const cardEl = deckEl.querySelector(`.card[data-slot-index="${i}"]`);
+          if (!cardEl) return;
+          const existingIcons = cardEl.querySelector('.card-icons');
+          if (existingIcons) existingIcons.remove();
+          const newIconsHtml = common.buildCardIcons(card, i, evoForIcons, heroForIcons, tournament);
+          if (newIconsHtml) {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = newIconsHtml;
+            cardEl.insertBefore(wrapper.firstElementChild, cardEl.firstChild);
+          }
+        });
+      }
+
       function refreshDeck() {
         if (!originalDeck) return;
 
@@ -162,13 +214,26 @@
         const sorted = evoSortCb.checked
           ? api.applyEvoSort([...originalDeck], evoForSort, heroForSort)
           : [...originalDeck];
+
+        const keyOf = c => c && (c.key || String(c.id));
+        const orderChanged = !currentDeck
+          || sorted.length !== currentDeck.length
+          || sorted.some((card, i) => keyOf(card) !== keyOf(currentDeck[i]));
+
         currentDeck = sorted;
 
         currentUrl = api.makeDeckUrl(currentDeck, currentTowerId);
         deckLink.href = currentUrl;
         deckLink.style.display = "inline-flex";
 
-        renderDeck(currentDeck);
+        if (orderChanged) {
+          // Карты реально поменялись местами – перерисовываем с анимацией появления
+          renderDeck(currentDeck);
+        } else {
+          // Порядок карт не изменился (например, просто отметили эволюцию/героизм) –
+          // обновляем только иконки, без повторной анимации появления
+          updateCardIconsInPlace(currentDeck);
+        }
         updateVisibility();
       }
 
@@ -252,9 +317,9 @@
 
           renderDeck(currentDeck);
           towerEl.hidden = false;
-          towerEl.innerHTML = `<strong>🏰 Башня: ${escapeHtml(towerName)}</strong><span>tt: ${towerId}</span>`;
+          towerEl.innerHTML = `<strong>🏰 Башня: ${escapeHtml(towerName)}</strong><span>ID: ${towerId}</span>`;
 
-          statusEl.textContent = `Колода сгенерирована из ${availableCards.length} доступных карт (всего ${allCards.length})`;
+          updateStatusMessage();
           statusEl.classList.remove('error');
 
           updateVisibility();
