@@ -5,6 +5,31 @@ const TOWER_TROOPS = {
   "Royal Chef": 159000004,
 };
 
+// Всегда доступные карты (по ключу)
+const ALWAYS_OWNED_CARDS_KEYS = new Set([
+  "knight",
+  "archers",
+  "arrows",
+  "minions",
+  "fireball",
+  "mini-pekka",
+  "musketeer",
+  "giant"
+]);
+
+// Всегда доступные башни (по имени)
+const ALWAYS_OWNED_TOWERS_NAMES = new Set([
+  "Tower Princess"
+]);
+
+// Редкость башен
+const TOWER_RARITY_MAP = {
+  "Tower Princess": "Common",
+  "Cannoneer": "Epic",
+  "Dagger Duchess": "Legendary",
+  "Royal Chef": "Legendary"
+};
+
 const EXCLUDED_KEYS = new Set([
   "santa-hog-rider",
   "super-lava-hound",
@@ -155,7 +180,6 @@ function isChampion(card) {
   return String(card?.rarity ?? "").toLowerCase() === "champion";
 }
 
-// Логика сортировки колоды по способностям с учётом купленных/отмеченных способностей
 function applyEvoSort(deck, evoOwned = {}, heroismOwned = {}) {
   if (!Array.isArray(deck) || deck.length < 8) return deck;
 
@@ -175,7 +199,6 @@ function applyEvoSort(deck, evoOwned = {}, heroismOwned = {}) {
   const champCount = champions.length;
 
   if (champCount >= 2) {
-    // 2 Героя: ставятся во 2 и 3 клетки (индексы 1 и 2)
     const shuffledChamps = shuffle(champions);
     result[1] = shuffledChamps[0];
     result[2] = shuffledChamps[1];
@@ -184,7 +207,6 @@ function applyEvoSort(deck, evoOwned = {}, heroismOwned = {}) {
       nonChampions.push(shuffledChamps[i]);
     }
 
-    // В клетку 1 (индекс 0) ищем имеющуюся эволюцию
     let bestScore = -1;
     let candidates = [];
 
@@ -209,11 +231,8 @@ function applyEvoSort(deck, evoOwned = {}, heroismOwned = {}) {
       result[normalSlots[i]] = shuffledRemaining[i];
     }
   } else if (champCount === 1) {
-    // 1 Герой: ставится во 2 клетку (индекс 1)
     result[1] = champions[0];
 
-    // Клетка 1 (индекс 0): нужна Эволюция
-    // Клетка 3 (индекс 2): может быть Эволюция или Героизм
     let bestScore = -1;
     let bestTuples = [];
 
@@ -250,10 +269,6 @@ function applyEvoSort(deck, evoOwned = {}, heroismOwned = {}) {
       result[normalSlots[i]] = shuffledRemaining[i];
     }
   } else {
-    // 0 Героев:
-    // Клетка 1 (индекс 0): Эволюция
-    // Клетка 2 (индекс 1): Героизм
-    // Клетка 3 (индекс 2): Эволюция или Героизм
     let bestScore = -1;
     let bestTuples = [];
 
@@ -330,5 +345,8 @@ window.ClashRoyaleGenerator = {
   generateDeck,
   applyEvoSort,
   makeDeckUrl,
-  TOWER_TROOPS
+  TOWER_TROOPS,
+  ALWAYS_OWNED_CARDS_KEYS,
+  ALWAYS_OWNED_TOWERS_NAMES,
+  TOWER_RARITY_MAP
 };

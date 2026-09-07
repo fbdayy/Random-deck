@@ -12,15 +12,20 @@
   --hero-color: #ffc857;
   --evo-color: #b98bff;
   --heroism-color: #ffe066;
+  --rarity-common: #4aa3ff;
+  --rarity-rare: #ff8c42;
+  --rarity-epic: #b473ff;
+  --rarity-legendary: #ffcc66;
+  --rarity-champion: #ffd700;
 }
 
 body.light-theme {
   color-scheme: light;
   --bg: #f2f6fc;
   --panel: #ffffff;
-  --panel2: #e6edf5;
+  --panel2: #d9e2ef;
   --text: #1a2332;
-  --muted: #4a5a72;
+  --muted: #2c3a4f;
   --accent: #3b7bf7;
   --accent2: #7b5bf7;
   --danger: #d9534f;
@@ -28,6 +33,11 @@ body.light-theme {
   --hero-color: #b8790a;
   --evo-color: #7c3aed;
   --heroism-color: #c9a300;
+  --rarity-common: #0055cc;
+  --rarity-rare: #cc5500;
+  --rarity-epic: #6a2b99;
+  --rarity-legendary: #b8860b;
+  --rarity-champion: #996515;
 }
 
 * {
@@ -39,18 +49,8 @@ body {
   min-height: 100vh;
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background:
-    radial-gradient(circle at 20% 0%, rgba(103, 166, 255, .18), transparent 32rem),
-    radial-gradient(circle at 90% 20%, rgba(140, 108, 255, .14), transparent 28rem),
-    var(--bg);
+  background: var(--bg);
   transition: background 0.3s;
-}
-
-body.light-theme {
-  background:
-    radial-gradient(circle at 20% 0%, rgba(59, 123, 247, .08), transparent 32rem),
-    radial-gradient(circle at 90% 20%, rgba(123, 91, 247, .06), transparent 28rem),
-    var(--bg);
 }
 
 .wrap {
@@ -491,6 +491,430 @@ body.light-theme .tower {
   display: none;
 }
 
+/* ===== Стили для страницы управления коллекцией (cards.html) ===== */
+
+.management {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.management .page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px 24px;
+  margin-bottom: 28px;
+}
+
+.management .page-header .title-group h1 {
+  font-size: clamp(32px, 6vw, 56px);
+  margin: 0 0 4px;
+  letter-spacing: -0.02em;
+}
+
+.management .page-header .title-group p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 15px;
+}
+
+.management .page-header .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.management .panel {
+  padding: 28px 30px 32px;
+  border-radius: 28px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(2px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-panel);
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Фильтры */
+.management .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+}
+
+.management .filters input,
+.management .filters select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 14px;
+  min-width: 140px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.management .filters input:focus,
+.management .filters select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(103, 166, 255, 0.15);
+}
+
+.management .filters select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239ca9c7' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+body.light-theme .management .filters select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a5a72' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+}
+.management .filters select option {
+  background: var(--panel);
+}
+
+/* Статистика — строки всегда в ряд, равные размеры */
+.management .stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.management .stats .stats-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.management .stats .stats-row span {
+  background: var(--panel2);
+  padding: 6px 16px;
+  border-radius: 30px;
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--muted);
+  flex: 1 1 0; /* все блоки одинаковой ширины */
+  min-width: 140px; /* чтобы не сжимались слишком сильно */
+}
+
+.management .stats .stats-row span strong {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Кнопки действий — фон как у панели, без белого при нажатии */
+.management .actions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 6px 0 24px;
+}
+
+.management .actions-bar button {
+  padding: 8px 20px;
+  border-radius: 30px;
+  border: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  background: var(--panel);  /* используем цвет панели, а не panel2 */
+  color: var(--text);
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+  min-width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.management .actions-bar button:hover {
+  background: var(--panel2);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.management .actions-bar button:active,
+.management .actions-bar button:focus {
+  background: var(--panel);  /* не меняем фон при нажатии */
+  transform: scale(0.95);
+}
+
+/* Кнопка "Сбросить всё" – красная */
+#resetAllBtn {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+#resetAllBtn:hover {
+  background: var(--danger);
+  opacity: 0.8;
+}
+#resetAllBtn:active,
+#resetAllBtn:focus {
+  background: var(--danger);
+  opacity: 0.9;
+}
+
+/* Основная кнопка "Сохранить" остаётся градиентной */
+.management .actions-bar .primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 16px rgba(103, 166, 255, 0.25);
+  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+}
+.management .actions-bar .primary:hover:not(.no-hover) {
+  opacity: 0.85;
+  box-shadow: 0 6px 24px rgba(103, 166, 255, 0.35);
+}
+.management .actions-bar .primary.pressed {
+  transform: scale(0.95);
+  opacity: 1;
+  transition: transform 0.2s ease, opacity 0s;
+}
+.management .actions-bar .primary.no-hover:hover {
+  opacity: 1;
+}
+.management .actions-bar .primary:active,
+.management .actions-bar .primary:focus {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+}
+
+.management .section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 28px 0 14px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.01em;
+}
+
+.management .section-title:first-of-type {
+  margin-top: 4px;
+}
+
+/* Башни — в один столбец */
+.management .towers-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tower-item {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.25s;
+  position: relative;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+}
+
+.tower-item:focus {
+  outline: none;
+}
+.tower-item:focus-visible {
+  outline: 2px solid var(--accent);
+}
+
+.tower-item:hover:not(.always-owned) {
+  background: var(--panel);
+  border-color: rgba(103, 166, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.tower-item .name {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.tower-item .sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Состояние "не найдено" для карт и башен */
+.card-item.not-found,
+.tower-item.not-found {
+  opacity: 0.5;
+  background: rgba(255, 80, 80, 0.08);
+  border-color: var(--danger);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-item.not-found::after,
+.tower-item.not-found::after {
+  content: 'не найдено';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--danger);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 4px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  backdrop-filter: blur(2px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.card-item.not-found .card-icons,
+.tower-item.not-found .card-icons {
+  z-index: 2;
+}
+
+.always-owned {
+  opacity: 1 !important;
+  border-color: var(--accent) !important;
+  background: rgba(103, 166, 255, 0.08) !important;
+  cursor: default !important;
+}
+
+.management .cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.management .card-item {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.25s;
+  position: relative;
+}
+
+.management .card-item:hover:not(.always-owned) {
+  background: var(--panel);
+  border-color: rgba(103, 166, 255, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.management .card-item .info {
+  flex: 1;
+  min-width: 0;
+}
+
+.management .card-item .info .name {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 2px;
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.management .card-item .info .sub {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 1px;
+  line-height: 1.4;
+}
+
+.badge.rarity-common { color: var(--rarity-common); }
+.badge.rarity-rare { color: var(--rarity-rare); }
+.badge.rarity-epic { color: var(--rarity-epic); }
+.badge.rarity-legendary { color: var(--rarity-legendary); }
+.badge.rarity-champion { color: var(--rarity-champion); }
+
+.management .card-item .info .sub .badge {
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: 20px;
+  background: rgba(103, 166, 255, 0.12);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  transition: color 0.2s;
+}
+
+.management .card-item .card-icons {
+  position: relative;
+  top: auto;
+  right: auto;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+.management .card-item .card-icons .card-icon-btn,
+.management .card-item .card-icons .card-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.management .card-item .card-icons {
+  gap: 6px;
+}
+
+/* Toast */
+.management .toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 12px 32px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+  z-index: 999;
+  backdrop-filter: blur(8px);
+}
+
+.management .toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== Адаптив ===== */
 @media (max-width: 720px) {
   .deck {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -537,5 +961,56 @@ body.light-theme .tower {
   .theme-toggle {
     font-size: 20px;
     padding: 6px 14px;
+  }
+}
+
+@media (max-width: 700px) {
+  .management .panel {
+    padding: 16px 14px 20px;
+    border-radius: 20px;
+  }
+  .management .cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .management .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 12px;
+  }
+  .management .filters input,
+  .management .filters select {
+    min-width: 0;
+    width: 100%;
+  }
+  .management .filters label {
+    white-space: normal;
+  }
+  .management .stats {
+    gap: 6px;
+  }
+  .management .stats .stats-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .management .stats .stats-row span {
+    flex: 1 1 0;
+    min-width: 100px;
+    justify-content: center;
+  }
+  .management .actions-bar button {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+  .management .page-header .title-group h1 {
+    font-size: 26px;
+  }
+  .tower-item {
+    padding: 12px 14px;
+  }
+  .card-item.not-found::after,
+  .tower-item.not-found::after {
+    font-size: 12px;
+    padding: 3px 10px;
   }
 }

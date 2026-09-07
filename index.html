@@ -15,7 +15,7 @@
         <p>Это полностью сгенерированный нейросетью генератор абсолютно случайных колод в Clash Royale без всяких правил.</p>
       </div>
       <div class="header-controls">
-        <a href="cards.html" class="nav-link">изменить данные о картах и башнях</a>
+        <a href="cards.html" class="nav-link">Изменить данные о картах и башнях</a>
         <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
       </div>
     </header>
@@ -30,6 +30,8 @@
         <label><input type="checkbox" id="showDeck" checked> Показывать колоду</label>
         <label><input type="checkbox" id="showTower" checked> Показывать башню</label>
         <label><input type="checkbox" id="evoSort"> Сортировка по способностям</label>
+        <!-- НОВЫЙ ЧЕКБОКС -->
+        <label><input type="checkbox" id="tournamentMode"> Турнирный уровень</label>
       </div>
 
       <div class="reset-actions">
@@ -44,9 +46,11 @@
   </main>
 
   <script src="generator.js"></script>
+  <script src="common.js"></script>
   <script>
     (function() {
       const api = window.ClashRoyaleGenerator;
+      const common = window.ClashRoyaleCommon;
       const generateBtn = document.getElementById("generate");
       const deckLink = document.getElementById("deckLink");
       const statusEl = document.getElementById("status");
@@ -58,11 +62,12 @@
       const showDeckCb = document.getElementById("showDeck");
       const showTowerCb = document.getElementById("showTower");
       const evoSortCb = document.getElementById("evoSort");
+      const tournamentCb = document.getElementById("tournamentMode"); // новый
 
       const resetEvoBtn = document.getElementById("resetEvo");
       const resetHeroismBtn = document.getElementById("resetHeroism");
 
-      let cards = [];
+      let allCards = [];
       let currentUrl = "";
       let pressTimer = null;
 
@@ -71,148 +76,56 @@
       let currentTowerName = "";
       let currentTowerId = null;
 
-      function setTheme(theme) {
-        const isLight = theme === 'light';
-        document.body.classList.toggle('light-theme', isLight);
-        themeToggle.textContent = isLight ? '☀️' : '🌙';
-      }
+      let evoOwned = common.loadOwnedMap(common.STORAGE_KEYS.EVO);
+      let heroismOwned = common.loadOwnedMap(common.STORAGE_KEYS.HEROISM);
 
-      function toggleTheme() {
-        const current = document.body.classList.contains('light-theme') ? 'light' : 'dark';
-        const next = current === 'light' ? 'dark' : 'light';
-        setTheme(next);
-        try {
-          localStorage.setItem('cr-theme', next);
-        } catch (_) { /* ignore */ }
-      }
+      // Восстанавливаем состояние турнирного режима
+      try {
+        const saved = localStorage.getItem('cr-tournament-mode');
+        if (saved !== null) tournamentCb.checked = saved === 'true';
+      } catch (_) {}
 
-      function loadTheme() {
-        let stored = null;
-        try {
-          stored = localStorage.getItem('cr-theme');
-        } catch (_) { /* ignore */ }
-        if (stored) {
-          setTheme(stored);
-          return;
-        }
-        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        setTheme(prefersLight ? 'light' : 'dark');
-      }
+      tournamentCb.addEventListener('change', function() {
+        try { localStorage.setItem('cr-tournament-mode', String(tournamentCb.checked)); } catch (_) {}
+        refreshDeck(); // обновить отображение иконок (перерисовать колоду)
+      });
 
-      themeToggle.addEventListener('click', toggleTheme);
+      // Тема
+      themeToggle.addEventListener('click', common.toggleTheme);
+      common.loadTheme();
 
-      function loadOwnedMap(storageKey) {
-        try {
-          const raw = localStorage.getItem(storageKey);
-          return raw ? JSON.parse(raw) : {};
-        } catch (_) {
-          return {};
-        }
-      }
+      function escapeHtml(str) { return common.escapeHtml(str); }
 
-      function saveOwnedMap(storageKey, map) {
-        try {
-          localStorage.setItem(storageKey, JSON.stringify(map));
-        } catch (_) { /* ignore */ }
-      }
+      // Сброс эво/героизм
+      resetEvoBtn.addEventListener('click', function() {
+        evoOwned = {};
+        common.saveOwnedMap(common.STORAGE_KEYS.EVO, evoOwned);
+        refreshDeck();
+      });
 
-      let evoOwned = loadOwnedMap('cr-evo-owned');
-      let heroismOwned = loadOwnedMap('cr-heroism-owned');
+      resetHeroismBtn.addEventListener('click', function() {
+        heroismOwned = {};
+        common.saveOwnedMap(common.STORAGE_KEYS.HEROISM, heroismOwned);
+        refreshDeck();
+      });
 
-      function isHeroRarity(card) {
-        return String(card.rarity ?? '').toLowerCase() === 'champion';
+      // Отображение
+      function updateVisibility() {
+        deckEl.classList.toggle('hidden', !showDeckCb.checked);
+        towerEl.classList.toggle('hidden', !showTowerCb.checked);
       }
-      function canEvolve(card) {
-        return Boolean(card.has_evolution);
-      }
-      function canHeroism(card) {
-        return Boolean(card.has_heroism);
-      }
-
-      function computeIconState(ownedMap, key, slotIndex, kind) {
-        const owned = Boolean(ownedMap[key]);
-        if (!owned) return 1;
-        let isSpecialSlot;
-        if (kind === 'heroism') {
-          isSpecialSlot = (slotIndex === 1 || slotIndex === 2);
-        } else {
-          isSpecialSlot = (slotIndex === 0 || slotIndex === 2);
-        }
-        return isSpecialSlot ? 3 : 2;
-      }
-
-      const RING = `<circle class="icon-ring" cx="18" cy="18" r="15"></circle>`;
-      
-      const HERO_SHIELD_SVG = `
-        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false">
-          ${RING}
-          <path class="icon-shape" d="M18 6 L28 10 L28 20 C28 28 18 32 18 32 C18 32 8 28 8 20 L8 10 Z M18 12 L22 15 L20 21 L16 21 L14 15 Z" />
-        </svg>
-      `;
-      
-      const HEROISM_STAR_SVG = `
-        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false">
-          ${RING}
-          <path class="icon-shape" d="M18 6 L20.9 14 L18 14 Z" />
-          <path class="icon-shape" d="M18 6 L15.1 14 L18 14 Z" />
-          <path class="icon-shape" d="M29.4 14.3 L20.9 14 L21.85 16.75 Z" />
-          <path class="icon-shape" d="M29.4 14.3 L22.8 19.5 L21.85 16.75 Z" />
-          <path class="icon-shape" d="M25.1 27.7 L22.8 19.5 L20.4 21.25 Z" />
-          <path class="icon-shape" d="M25.1 27.7 L18 23 L20.4 21.25 Z" />
-          <path class="icon-shape" d="M10.9 27.7 L18 23 L15.6 21.25 Z" />
-          <path class="icon-shape" d="M10.9 27.7 L13.2 19.5 L15.6 21.25 Z" />
-          <path class="icon-shape" d="M6.6 14.3 L13.2 19.5 L14.15 16.75 Z" />
-          <path class="icon-shape" d="M6.6 14.3 L15.1 14 L14.15 16.75 Z" />
-          <path class="icon-shape" d="M18 14 L21.85 16.75 L20.4 21.25 L15.6 21.25 L14.15 16.75 Z" />
-        </svg>
-      `;
-      
-      const EVO_AMETHYST_SVG = `
-        <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false">
-          ${RING}
-          <path class="icon-shape" d="M18 7 L29 18 L18 29 L7 18 Z" />
-        </svg>
-      `;
-      
-      function buildCardIcons(card, slotIndex) {
-        const parts = [];
-      
-        if (isHeroRarity(card)) {
-          parts.push(`<span class="card-icon hero-icon" title="Герой">${HERO_SHIELD_SVG}</span>`);
-        }
-      
-        if (canEvolve(card)) {
-          const owned = Boolean(evoOwned[card.key]);
-          const state = computeIconState(evoOwned, card.key, slotIndex, 'evolution');
-          parts.push(`
-            <button type="button" class="card-icon-btn" data-kind="evolution" data-key="${escapeHtml(String(card.key ?? card.id))}" data-state="${state}"
-              aria-pressed="${owned}" aria-label="Эволюция: ${owned ? 'есть' : 'нет'}"
-              title="Отметить, есть ли у вас эволюция этой карты">
-              ${EVO_AMETHYST_SVG}
-            </button>
-          `);
-        }
-      
-        if (canHeroism(card)) {
-          const owned = Boolean(heroismOwned[card.key]);
-          const state = computeIconState(heroismOwned, card.key, slotIndex, 'heroism');
-          parts.push(`
-            <button type="button" class="card-icon-btn" data-kind="heroism" data-key="${escapeHtml(String(card.key ?? card.id))}" data-state="${state}"
-              aria-pressed="${owned}" aria-label="Героизм: ${owned ? 'есть' : 'нет'}"
-              title="Отметить, есть ли у вас героизм этой карты">
-              ${HEROISM_STAR_SVG}
-            </button>
-          `);
-        }
-      
-        if (!parts.length) return '';
-        return `<div class="card-icons">${parts.join('')}</div>`;
-      }
+      showDeckCb.addEventListener('change', updateVisibility);
+      showTowerCb.addEventListener('change', updateVisibility);
 
       function renderDeck(deck) {
+        const tournament = tournamentCb.checked;
+        // При турнирном режиме передаём фиктивные объекты, чтобы иконки рисовались залитыми
+        const evoForIcons = tournament ? new Proxy({}, { get: () => true }) : evoOwned;
+        const heroForIcons = tournament ? new Proxy({}, { get: () => true }) : heroismOwned;
+
         deckEl.innerHTML = deck.map((card, i) => `
           <article class="card" data-slot-index="${i}">
-            ${buildCardIcons(card, i)}
+            ${common.buildCardIcons(card, i, evoForIcons, heroForIcons, tournament)}
             <div class="number">СЛОТ ${i + 1}</div>
             <div class="name">${escapeHtml(card.name)}</div>
             <div class="id">ID: ${escapeHtml(String(card.id))}</div>
@@ -223,85 +136,31 @@
       deckEl.addEventListener('click', function(e) {
         const btn = e.target.closest('.card-icon-btn');
         if (!btn) return;
+        // Если турнирный режим – клики по иконкам заблокированы (они не кнопки)
+        if (tournamentCb.checked) return;
         const cardEl = btn.closest('.card');
         if (!cardEl) return;
 
         const kind = btn.dataset.kind;
         const key = btn.dataset.key;
-
         const map = kind === 'evolution' ? evoOwned : heroismOwned;
-        const storageKey = kind === 'evolution' ? 'cr-evo-owned' : 'cr-heroism-owned';
+        const storageKey = kind === 'evolution' ? common.STORAGE_KEYS.EVO : common.STORAGE_KEYS.HEROISM;
 
-        const owned = !map[key];
-        map[key] = owned;
-        saveOwnedMap(storageKey, map);
-
+        map[key] = !map[key];
+        common.saveOwnedMap(storageKey, map);
         refreshDeck();
       });
-
-      resetEvoBtn.addEventListener('click', function() {
-        evoOwned = {};
-        saveOwnedMap('cr-evo-owned', evoOwned);
-        refreshDeck();
-      });
-
-      resetHeroismBtn.addEventListener('click', function() {
-        heroismOwned = {};
-        saveOwnedMap('cr-heroism-owned', heroismOwned);
-        refreshDeck();
-      });
-
-      function escapeHtml(value) {
-        return value.replace(/[&<>"']/g, c => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;"
-        }[c]));
-      }
-
-      function updateVisibility() {
-        const showDeck = showDeckCb.checked;
-        const showTower = showTowerCb.checked;
-        deckEl.classList.toggle('hidden', !showDeck);
-        towerEl.classList.toggle('hidden', !showTower);
-      }
-
-      showDeckCb.addEventListener('change', updateVisibility);
-      showTowerCb.addEventListener('change', updateVisibility);
-
-      function animatePress() {
-        if (pressTimer) {
-          clearTimeout(pressTimer);
-          generateBtn.classList.remove('pressed');
-        }
-        generateBtn.classList.add('pressed');
-        generateBtn.classList.add('no-hover');
-        pressTimer = setTimeout(() => {
-          generateBtn.classList.remove('pressed');
-          pressTimer = null;
-        }, 300);
-      }
-
-      generateBtn.addEventListener('mouseleave', function() {
-        generateBtn.classList.remove('no-hover');
-      });
-
-      function triggerWave() {
-        panel.classList.remove('wave-active');
-        void panel.offsetWidth;
-        panel.classList.add('wave-active');
-        setTimeout(() => {
-          panel.classList.remove('wave-active');
-        }, 700);
-      }
 
       function refreshDeck() {
         if (!originalDeck) return;
 
-        const sorted = evoSortCb.checked 
-          ? api.applyEvoSort([...originalDeck], evoOwned, heroismOwned) 
+        const tournament = tournamentCb.checked;
+        // Для сортировки – при турнирном режиме все способности считаются доступными
+        const evoForSort = tournament ? new Proxy({}, { get: () => true }) : evoOwned;
+        const heroForSort = tournament ? new Proxy({}, { get: () => true }) : heroismOwned;
+
+        const sorted = evoSortCb.checked
+          ? api.applyEvoSort([...originalDeck], evoForSort, heroForSort)
           : [...originalDeck];
         currentDeck = sorted;
 
@@ -313,25 +172,77 @@
         updateVisibility();
       }
 
+      evoSortCb.addEventListener('change', refreshDeck);
+
+      function animatePress() {
+        if (pressTimer) clearTimeout(pressTimer);
+        generateBtn.classList.add('pressed', 'no-hover');
+        pressTimer = setTimeout(() => {
+          generateBtn.classList.remove('pressed');
+          pressTimer = null;
+        }, 300);
+      }
+      generateBtn.addEventListener('mouseleave', function() {
+        generateBtn.classList.remove('no-hover');
+      });
+
+      function triggerWave() {
+        panel.classList.remove('wave-active');
+        void panel.offsetWidth;
+        panel.classList.add('wave-active');
+        setTimeout(() => panel.classList.remove('wave-active'), 700);
+      }
+
       async function generate() {
         try {
           generateBtn.disabled = true;
           statusEl.classList.remove('error');
-          statusEl.textContent = "Генерирую…";
 
-          triggerWave();
+          const tournament = tournamentCb.checked;
+          let availableCards;
+          let towerKeys;
 
-          let deck = api.generateDeck(cards);
-          originalDeck = deck;
+          if (tournament) {
+            // Турнирный режим – все карты и все башни доступны
+            availableCards = allCards;
+            towerKeys = Object.keys(api.TOWER_TROOPS);
+          } else {
+            const ownedCardsSet = common.loadOwnedCards();
+            const ownedTowersSet = common.loadOwnedTowers();
+            const alwaysCardsSet = common.getAlwaysOwnedCards();
+            const alwaysTowersSet = common.getAlwaysOwnedTowers();
 
-          const towerKeys = Object.keys(api.TOWER_TROOPS);
+            availableCards = allCards.filter(card =>
+              ownedCardsSet.has(card.key) || alwaysCardsSet.has(card.key)
+            );
+            towerKeys = Object.keys(api.TOWER_TROOPS).filter(name =>
+              ownedTowersSet.has(name) || alwaysTowersSet.has(name)
+            );
+            if (towerKeys.length === 0) towerKeys = Object.keys(api.TOWER_TROOPS);
+          }
+
+          if (availableCards.length < 8) {
+            statusEl.classList.add('error');
+            statusEl.textContent = `Недостаточно карт (нужно минимум 8, доступно ${availableCards.length}). Отметьте больше карт в управлении коллекцией.`;
+            deckLink.style.display = "none";
+            return;
+          }
+
           const towerName = towerKeys[Math.floor(Math.random() * towerKeys.length)];
           const towerId = api.TOWER_TROOPS[towerName];
           currentTowerName = towerName;
           currentTowerId = towerId;
 
-          const sorted = evoSortCb.checked 
-            ? api.applyEvoSort([...originalDeck], evoOwned, heroismOwned) 
+          triggerWave();
+
+          let deck = api.generateDeck(availableCards);
+          originalDeck = deck;
+
+          const evoForSort = tournament ? new Proxy({}, { get: () => true }) : evoOwned;
+          const heroForSort = tournament ? new Proxy({}, { get: () => true }) : heroismOwned;
+
+          const sorted = evoSortCb.checked
+            ? api.applyEvoSort([...originalDeck], evoForSort, heroForSort)
             : [...originalDeck];
           currentDeck = sorted;
 
@@ -343,7 +254,8 @@
           towerEl.hidden = false;
           towerEl.innerHTML = `<strong>🏰 Башня: ${escapeHtml(towerName)}</strong><span>tt: ${towerId}</span>`;
 
-          statusEl.textContent = "";
+          statusEl.textContent = `Колода сгенерирована из ${availableCards.length} доступных карт (всего ${allCards.length})`;
+          statusEl.classList.remove('error');
 
           updateVisibility();
         } catch (error) {
@@ -355,11 +267,16 @@
         }
       }
 
+      generateBtn.addEventListener("click", function(e) {
+        animatePress();
+        generate();
+      });
+
       async function init() {
         try {
           const raw = await api.loadCards();
-          cards = api.prepareCards(raw);
-          statusEl.textContent = `Загружено обычных карт: ${cards.length}`;
+          allCards = api.prepareCards(raw);
+          statusEl.textContent = `Загружено обычных карт: ${allCards.length}`;
           await generate();
         } catch (error) {
           statusEl.classList.add('error');
@@ -368,14 +285,6 @@
         }
       }
 
-      generateBtn.addEventListener("click", function(e) {
-        animatePress();
-        generate();
-      });
-
-      evoSortCb.addEventListener('change', refreshDeck);
-
-      loadTheme();
       init();
     })();
   </script>

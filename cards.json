@@ -1813,5 +1813,35 @@
         "is_evolved": false,
         "has_evolution": false,
         "has_heroism": false
+    },
+    {
+        "key": "ronin",
+        "name": "Ronin",
+        "sc_key": "Ronin",
+        "elixir": 4,
+        "type": "Troop",
+        "rarity": "Epic",
+        "arena": 12,
+        "description": "A masterless samurai who strikes swiftly with his katana. His dash ability lets him close the gap and deal double damage to the first enemy hit.",
+        "id": 26000104,
+        "evolved_spells_sc_key": "",
+        "is_evolved": false,
+        "has_evolution": false,
+        "has_heroism": false
+    },
+    {
+        "key": "giant-minion",
+        "name": "Giant Minion",
+        "sc_key": "GiantMinion",
+        "elixir": 5,
+        "type": "Troop",
+        "rarity": "Rare",
+        "arena": 10,
+        "description": "A massive flying brute that targets buildings. It drops smaller Minions upon death, overwhelming the enemy with sheer numbers.",
+        "id": 26000105,
+        "evolved_spells_sc_key": "",
+        "is_evolved": false,
+        "has_evolution": false,
+        "has_heroism": false
     }
 ]
