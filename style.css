@@ -23,7 +23,7 @@ body.light-theme {
   color-scheme: light;
   --bg: #f2f6fc;
   --panel: #ffffff;
-  --panel2: #d9e2ef;
+  --panel2: rgba(0, 0, 0, 0.03);
   --text: #1a2332;
   --muted: #2c3a4f;
   --accent: #3b7bf7;
@@ -450,8 +450,13 @@ body.light-theme .icon-ring {
 .card-icon-btn[data-kind="evolution"] .icon-ring { stroke: var(--evo-color); }
 .card-icon-btn[data-kind="evolution"] .icon-shape { fill: var(--evo-color); }
 
-.card-icon-btn[data-kind="heroism"] .icon-ring { stroke: var(--heroism-color); }
-.card-icon-btn[data-kind="heroism"] .icon-shape { fill: var(--heroism-color); }
+.card-icon-btn[data-kind="heroism"] .icon-ring {
+  stroke: var(--heroism-color);
+}
+.card-icon-btn[data-kind="heroism"] .icon-shape {
+  fill: var(--heroism-color);
+  fill-opacity: 1;
+}
 
 .card-icon-btn[data-state="1"] .icon-shape {
   fill-opacity: 0;
@@ -536,7 +541,7 @@ body.light-theme .tower {
   transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
-/* Фильтры */
+/* Фильтры — фон теперь как у карт (белый в светлой теме) */
 .management .filters {
   display: flex;
   flex-wrap: wrap;
@@ -546,7 +551,7 @@ body.light-theme .tower {
   margin-bottom: 18px;
   padding: 12px 16px;
   border-radius: 16px;
-  background: var(--panel2);
+  background: var(--panel);  /* изменено с panel2 на panel */
   border: 1px solid var(--border);
 }
 
@@ -585,7 +590,7 @@ body.light-theme .management .filters select {
   background: var(--panel);
 }
 
-/* Статистика — строки всегда в ряд, равные размеры */
+/* Статистика — фон как у карт */
 .management .stats {
   display: flex;
   flex-direction: column;
@@ -602,7 +607,7 @@ body.light-theme .management .filters select {
 }
 
 .management .stats .stats-row span {
-  background: var(--panel2);
+  background: var(--panel);  /* изменено с panel2 на panel */
   padding: 6px 16px;
   border-radius: 30px;
   border: 1px solid var(--border);
@@ -613,8 +618,8 @@ body.light-theme .management .filters select {
   font-weight: 500;
   font-size: 14px;
   color: var(--muted);
-  flex: 1 1 0; /* все блоки одинаковой ширины */
-  min-width: 140px; /* чтобы не сжимались слишком сильно */
+  flex: 1 1 0;
+  min-width: 140px;
 }
 
 .management .stats .stats-row span strong {
@@ -622,7 +627,7 @@ body.light-theme .management .filters select {
   font-weight: 700;
 }
 
-/* Кнопки действий — фон как у панели, без белого при нажатии */
+/* Кнопки действий — фон уже panel, оставляем */
 .management .actions-bar {
   display: flex;
   flex-wrap: wrap;
@@ -631,16 +636,17 @@ body.light-theme .management .filters select {
 }
 
 .management .actions-bar button {
+  flex: 1 1 0;
+  min-width: 0;
   padding: 8px 20px;
   border-radius: 30px;
   border: 1px solid var(--border);
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  background: var(--panel);  /* используем цвет панели, а не panel2 */
+  background: var(--panel);
   color: var(--text);
   transition: background 0.2s, transform 0.15s, box-shadow 0.2s, opacity 0.2s;
-  min-width: auto;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -654,7 +660,7 @@ body.light-theme .management .filters select {
 
 .management .actions-bar button:active,
 .management .actions-bar button:focus {
-  background: var(--panel);  /* не меняем фон при нажатии */
+  background: var(--panel);
   transform: scale(0.95);
 }
 
@@ -723,7 +729,7 @@ body.light-theme .management .filters select {
 }
 
 .tower-item {
-  background: var(--panel2);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 14px 16px;
@@ -798,10 +804,9 @@ body.light-theme .management .filters select {
   z-index: 2;
 }
 
+/* Always-owned теперь выглядит как обычная owned карта (фон и бордер одинаковые) */
 .always-owned {
   opacity: 1 !important;
-  border-color: var(--accent) !important;
-  background: rgba(103, 166, 255, 0.08) !important;
   cursor: default !important;
 }
 
@@ -813,7 +818,7 @@ body.light-theme .management .filters select {
 }
 
 .management .card-item {
-  background: var(--panel2);
+  background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 12px 16px;
