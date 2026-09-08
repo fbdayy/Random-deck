@@ -1,7 +1,7 @@
 [
     {
         "key": "knight",
-        "name": "Knight",
+        "name": "Рыцарь",
         "sc_key": "Knight",
         "elixir": 3,
         "type": "Troop",
@@ -16,7 +16,7 @@
     },
     {
         "key": "archers",
-        "name": "Archers",
+        "name": "Лучницы",
         "sc_key": "Archer",
         "elixir": 3,
         "type": "Troop",
@@ -31,7 +31,7 @@
     },
     {
         "key": "goblins",
-        "name": "Goblins",
+        "name": "Гоблины",
         "sc_key": "Goblins",
         "elixir": 2,
         "type": "Troop",
@@ -46,7 +46,7 @@
     },
     {
         "key": "giant",
-        "name": "Giant",
+        "name": "Гигант",
         "sc_key": "Giant",
         "elixir": 5,
         "type": "Troop",
@@ -61,7 +61,7 @@
     },
     {
         "key": "pekka",
-        "name": "P.E.K.K.A",
+        "name": "П.Е.К.К.А.",
         "sc_key": "Pekka",
         "elixir": 7,
         "type": "Troop",
@@ -76,7 +76,7 @@
     },
     {
         "key": "minions",
-        "name": "Minions",
+        "name": "Миньоны",
         "sc_key": "Minions",
         "elixir": 3,
         "type": "Troop",
@@ -91,7 +91,7 @@
     },
     {
         "key": "balloon",
-        "name": "Balloon",
+        "name": "Шар",
         "sc_key": "Balloon",
         "elixir": 5,
         "type": "Troop",
@@ -106,7 +106,7 @@
     },
     {
         "key": "witch",
-        "name": "Witch",
+        "name": "Ведьма",
         "sc_key": "Witch",
         "elixir": 5,
         "type": "Troop",
@@ -121,7 +121,7 @@
     },
     {
         "key": "barbarians",
-        "name": "Barbarians",
+        "name": "Варвары",
         "sc_key": "Barbarians",
         "elixir": 5,
         "type": "Troop",
@@ -136,7 +136,7 @@
     },
     {
         "key": "golem",
-        "name": "Golem",
+        "name": "Голем",
         "sc_key": "Golem",
         "elixir": 8,
         "type": "Troop",
@@ -151,7 +151,7 @@
     },
     {
         "key": "skeletons",
-        "name": "Skeletons",
+        "name": "Скелеты",
         "sc_key": "Skeletons",
         "elixir": 1,
         "type": "Troop",
@@ -166,7 +166,7 @@
     },
     {
         "key": "valkyrie",
-        "name": "Valkyrie",
+        "name": "Валькирия",
         "sc_key": "Valkyrie",
         "elixir": 4,
         "type": "Troop",
@@ -181,7 +181,7 @@
     },
     {
         "key": "skeleton-army",
-        "name": "Skeleton Army",
+        "name": "Армия скелетов",
         "sc_key": "SkeletonArmy",
         "elixir": 3,
         "type": "Troop",
@@ -196,7 +196,7 @@
     },
     {
         "key": "bomber",
-        "name": "Bomber",
+        "name": "Подрывник",
         "sc_key": "Bomber",
         "elixir": 2,
         "type": "Troop",
@@ -211,7 +211,7 @@
     },
     {
         "key": "musketeer",
-        "name": "Musketeer",
+        "name": "Мушкетер",
         "sc_key": "Musketeer",
         "elixir": 4,
         "type": "Troop",
@@ -226,7 +226,7 @@
     },
     {
         "key": "baby-dragon",
-        "name": "Baby Dragon",
+        "name": "Дракончик",
         "sc_key": "BabyDragon",
         "elixir": 4,
         "type": "Troop",
@@ -241,7 +241,7 @@
     },
     {
         "key": "prince",
-        "name": "Prince",
+        "name": "Принц",
         "sc_key": "Prince",
         "elixir": 5,
         "type": "Troop",
@@ -256,7 +256,7 @@
     },
     {
         "key": "wizard",
-        "name": "Wizard",
+        "name": "Колдун",
         "sc_key": "Wizard",
         "elixir": 5,
         "type": "Troop",
@@ -271,7 +271,7 @@
     },
     {
         "key": "mini-pekka",
-        "name": "Mini P.E.K.K.A",
+        "name": "Мини П.Е.К.К.А.",
         "sc_key": "MiniPekka",
         "elixir": 4,
         "type": "Troop",
@@ -286,7 +286,7 @@
     },
     {
         "key": "spear-goblins",
-        "name": "Spear Goblins",
+        "name": "Гоблины-копейщики",
         "sc_key": "SpearGoblins",
         "elixir": 2,
         "type": "Troop",
@@ -301,7 +301,7 @@
     },
     {
         "key": "giant-skeleton",
-        "name": "Giant Skeleton",
+        "name": "Гигантский скелет",
         "sc_key": "GiantSkeleton",
         "elixir": 6,
         "type": "Troop",
@@ -316,7 +316,7 @@
     },
     {
         "key": "hog-rider",
-        "name": "Hog Rider",
+        "name": "Всадник на кабане",
         "sc_key": "HogRider",
         "elixir": 4,
         "type": "Troop",
@@ -331,7 +331,7 @@
     },
     {
         "key": "minion-horde",
-        "name": "Minion Horde",
+        "name": "Орда миньонов",
         "sc_key": "MinionHorde",
         "elixir": 5,
         "type": "Troop",
@@ -346,7 +346,7 @@
     },
     {
         "key": "ice-wizard",
-        "name": "Ice Wizard",
+        "name": "Ледяной колдун",
         "sc_key": "IceWizard",
         "elixir": 3,
         "type": "Troop",
@@ -361,7 +361,7 @@
     },
     {
         "key": "royal-giant",
-        "name": "Royal Giant",
+        "name": "Королевский гигант",
         "sc_key": "RoyalGiant",
         "elixir": 6,
         "type": "Troop",
@@ -376,7 +376,7 @@
     },
     {
         "key": "guards",
-        "name": "Guards",
+        "name": "Стражи",
         "sc_key": "SkeletonWarriors",
         "elixir": 3,
         "type": "Troop",
@@ -391,7 +391,7 @@
     },
     {
         "key": "princess",
-        "name": "Princess",
+        "name": "Принцесса",
         "sc_key": "Princess",
         "elixir": 3,
         "type": "Troop",
@@ -406,7 +406,7 @@
     },
     {
         "key": "dark-prince",
-        "name": "Dark Prince",
+        "name": "Тёмный принц",
         "sc_key": "DarkPrince",
         "elixir": 4,
         "type": "Troop",
@@ -421,7 +421,7 @@
     },
     {
         "key": "three-musketeers",
-        "name": "Three Musketeers",
+        "name": "Три мушкетёра",
         "sc_key": "ThreeMusketeers",
         "elixir": 9,
         "type": "Troop",
@@ -436,7 +436,7 @@
     },
     {
         "key": "lava-hound",
-        "name": "Lava Hound",
+        "name": "Адская гончая",
         "sc_key": "LavaHound",
         "elixir": 7,
         "type": "Troop",
@@ -451,7 +451,7 @@
     },
     {
         "key": "ice-spirit",
-        "name": "Ice Spirit",
+        "name": "Ледяной дух",
         "sc_key": "IceSpirits",
         "elixir": 1,
         "type": "Troop",
@@ -466,7 +466,7 @@
     },
     {
         "key": "fire-spirit",
-        "name": "Fire Spirit",
+        "name": "Огненный дух",
         "sc_key": "FireSpirits",
         "elixir": 1,
         "type": "Troop",
@@ -481,7 +481,7 @@
     },
     {
         "key": "miner",
-        "name": "Miner",
+        "name": "Шахтёр",
         "sc_key": "Miner",
         "elixir": 3,
         "type": "Troop",
@@ -496,7 +496,7 @@
     },
     {
         "key": "sparky",
-        "name": "Sparky",
+        "name": "Спарки",
         "sc_key": "ZapMachine",
         "elixir": 6,
         "type": "Troop",
@@ -511,7 +511,7 @@
     },
     {
         "key": "bowler",
-        "name": "Bowler",
+        "name": "Вышибала",
         "sc_key": "Bowler",
         "elixir": 5,
         "type": "Troop",
@@ -526,7 +526,7 @@
     },
     {
         "key": "lumberjack",
-        "name": "Lumberjack",
+        "name": "Дровосек",
         "sc_key": "RageBarbarian",
         "elixir": 4,
         "type": "Troop",
@@ -541,7 +541,7 @@
     },
     {
         "key": "battle-ram",
-        "name": "Battle Ram",
+        "name": "Боевой таран",
         "sc_key": "BattleRam",
         "elixir": 4,
         "type": "Troop",
@@ -556,7 +556,7 @@
     },
     {
         "key": "inferno-dragon",
-        "name": "Inferno Dragon",
+        "name": "Пламенный дракон",
         "sc_key": "InfernoDragon",
         "elixir": 4,
         "type": "Troop",
@@ -571,7 +571,7 @@
     },
     {
         "key": "ice-golem",
-        "name": "Ice Golem",
+        "name": "Ледяной голем",
         "sc_key": "IceGolemite",
         "elixir": 2,
         "type": "Troop",
@@ -586,7 +586,7 @@
     },
     {
         "key": "mega-minion",
-        "name": "Mega Minion",
+        "name": "Мегаминьон",
         "sc_key": "MegaMinion",
         "elixir": 3,
         "type": "Troop",
@@ -601,7 +601,7 @@
     },
     {
         "key": "dart-goblin",
-        "name": "Dart Goblin",
+        "name": "Гоблин с дротиками",
         "sc_key": "BlowdartGoblin",
         "elixir": 3,
         "type": "Troop",
@@ -616,7 +616,7 @@
     },
     {
         "key": "goblin-gang",
-        "name": "Goblin Gang",
+        "name": "Банда гоблинов",
         "sc_key": "GoblinGang",
         "elixir": 3,
         "type": "Troop",
@@ -631,7 +631,7 @@
     },
     {
         "key": "electro-wizard",
-        "name": "Electro Wizard",
+        "name": "Громовержец",
         "sc_key": "ElectroWizard",
         "elixir": 4,
         "type": "Troop",
@@ -646,7 +646,7 @@
     },
     {
         "key": "elite-barbarians",
-        "name": "Elite Barbarians",
+        "name": "Элитные варвары",
         "sc_key": "AngryBarbarians",
         "elixir": 6,
         "type": "Troop",
@@ -661,7 +661,7 @@
     },
     {
         "key": "hunter",
-        "name": "Hunter",
+        "name": "Охотник",
         "sc_key": "Hunter",
         "elixir": 4,
         "type": "Troop",
@@ -676,7 +676,7 @@
     },
     {
         "key": "executioner",
-        "name": "Executioner",
+        "name": "Палач",
         "sc_key": "AxeMan",
         "elixir": 5,
         "type": "Troop",
@@ -691,7 +691,7 @@
     },
     {
         "key": "bandit",
-        "name": "Bandit",
+        "name": "Бандитка",
         "sc_key": "Assassin",
         "elixir": 3,
         "type": "Troop",
@@ -706,7 +706,7 @@
     },
     {
         "key": "royal-recruits",
-        "name": "Royal Recruits",
+        "name": "Королевские рекруты",
         "sc_key": "RoyalRecruits",
         "elixir": 7,
         "type": "Troop",
@@ -721,7 +721,7 @@
     },
     {
         "key": "night-witch",
-        "name": "Night Witch",
+        "name": "Ночная ведьма",
         "sc_key": "DarkWitch",
         "elixir": 4,
         "type": "Troop",
@@ -736,7 +736,7 @@
     },
     {
         "key": "bats",
-        "name": "Bats",
+        "name": "Летучие мыши",
         "sc_key": "Bats",
         "elixir": 2,
         "type": "Troop",
@@ -751,7 +751,7 @@
     },
     {
         "key": "royal-ghost",
-        "name": "Royal Ghost",
+        "name": "Королевский призрак",
         "sc_key": "Ghost",
         "elixir": 3,
         "type": "Troop",
@@ -766,7 +766,7 @@
     },
     {
         "key": "ram-rider",
-        "name": "Ram Rider",
+        "name": "Всадница на баране",
         "sc_key": "RamRider",
         "elixir": 5,
         "type": "Troop",
@@ -781,7 +781,7 @@
     },
     {
         "key": "zappies",
-        "name": "Zappies",
+        "name": "Мини-генераторы",
         "sc_key": "MiniSparkys",
         "elixir": 4,
         "type": "Troop",
@@ -796,7 +796,7 @@
     },
     {
         "key": "rascals",
-        "name": "Rascals",
+        "name": "Разбойники",
         "sc_key": "Rascals",
         "elixir": 5,
         "type": "Troop",
@@ -811,7 +811,7 @@
     },
     {
         "key": "cannon-cart",
-        "name": "Cannon Cart",
+        "name": "Повозка с пушкой",
         "sc_key": "MovingCannon",
         "elixir": 5,
         "type": "Troop",
@@ -826,7 +826,7 @@
     },
     {
         "key": "mega-knight",
-        "name": "Mega Knight",
+        "name": "Мегарыцарь",
         "sc_key": "MegaKnight",
         "elixir": 7,
         "type": "Troop",
@@ -841,7 +841,7 @@
     },
     {
         "key": "skeleton-barrel",
-        "name": "Skeleton Barrel",
+        "name": "Бочка со скелетами",
         "sc_key": "SkeletonBalloon",
         "elixir": 3,
         "type": "Troop",
@@ -856,7 +856,7 @@
     },
     {
         "key": "flying-machine",
-        "name": "Flying Machine",
+        "name": "Летучка",
         "sc_key": "DartBarrell",
         "elixir": 4,
         "type": "Troop",
@@ -871,7 +871,7 @@
     },
     {
         "key": "wall-breakers",
-        "name": "Wall Breakers",
+        "name": "Стенобои",
         "sc_key": "Wallbreakers",
         "elixir": 2,
         "type": "Troop",
@@ -886,7 +886,7 @@
     },
     {
         "key": "royal-hogs",
-        "name": "Royal Hogs",
+        "name": "Королевские кабаны",
         "sc_key": "RoyalHogs",
         "elixir": 5,
         "type": "Troop",
@@ -901,7 +901,7 @@
     },
     {
         "key": "goblin-giant",
-        "name": "Goblin Giant",
+        "name": "Гоблин-гигант",
         "sc_key": "GoblinGiant",
         "elixir": 6,
         "type": "Troop",
@@ -916,7 +916,7 @@
     },
     {
         "key": "fisherman",
-        "name": "Fisherman",
+        "name": "Рыбак",
         "sc_key": "Fisherman",
         "elixir": 3,
         "type": "Troop",
@@ -931,7 +931,7 @@
     },
     {
         "key": "magic-archer",
-        "name": "Magic Archer",
+        "name": "Магический лучник",
         "sc_key": "EliteArcher",
         "elixir": 4,
         "type": "Troop",
@@ -946,7 +946,7 @@
     },
     {
         "key": "electro-dragon",
-        "name": "Electro Dragon",
+        "name": "Электродракон",
         "sc_key": "ElectroDragon",
         "elixir": 5,
         "type": "Troop",
@@ -961,7 +961,7 @@
     },
     {
         "key": "firecracker",
-        "name": "Firecracker",
+        "name": "Огненная лучница",
         "sc_key": "Firecracker",
         "elixir": 3,
         "type": "Troop",
@@ -976,7 +976,7 @@
     },
     {
         "key": "mighty-miner",
-        "name": "Mighty Miner",
+        "name": "Шустрый шахтёр",
         "sc_key": "MightyMiner",
         "elixir": 4,
         "type": "Troop",
@@ -991,7 +991,7 @@
     },
     {
         "key": "elixir-golem",
-        "name": "Elixir Golem",
+        "name": "Эликсирный голем",
         "sc_key": "ElixirGolem",
         "elixir": 3,
         "type": "Troop",
@@ -1006,7 +1006,7 @@
     },
     {
         "key": "battle-healer",
-        "name": "Battle Healer",
+        "name": "Целительница-воин",
         "sc_key": "BattleHealer",
         "elixir": 4,
         "type": "Troop",
@@ -1021,7 +1021,7 @@
     },
     {
         "key": "skeleton-king",
-        "name": "Skeleton King",
+        "name": "Король скелетов",
         "sc_key": "SkeletonKing",
         "elixir": 4,
         "type": "Troop",
@@ -1036,7 +1036,7 @@
     },
     {
         "key": "archer-queen",
-        "name": "Archer Queen",
+        "name": "Королева лучниц",
         "sc_key": "ArcherQueen",
         "elixir": 5,
         "type": "Troop",
@@ -1051,7 +1051,7 @@
     },
     {
         "key": "golden-knight",
-        "name": "Golden Knight",
+        "name": "Золотой рыцарь",
         "sc_key": "GoldenKnight",
         "elixir": 4,
         "type": "Troop",
@@ -1066,7 +1066,7 @@
     },
     {
         "key": "monk",
-        "name": "Monk",
+        "name": "Монах",
         "sc_key": "Monk",
         "elixir": 5,
         "type": "Troop",
@@ -1081,7 +1081,7 @@
     },
     {
         "key": "skeleton-dragons",
-        "name": "Skeleton Dragons",
+        "name": "Костяные драконы",
         "sc_key": "SkeletonDragons",
         "elixir": 4,
         "type": "Troop",
@@ -1096,7 +1096,7 @@
     },
     {
         "key": "mother-witch",
-        "name": "Mother Witch",
+        "name": "Ведьмина бабушка",
         "sc_key": "WitchMother",
         "elixir": 4,
         "type": "Troop",
@@ -1111,7 +1111,7 @@
     },
     {
         "key": "electro-spirit",
-        "name": "Electro Spirit",
+        "name": "Электрический дух",
         "sc_key": "ElectroSpirit",
         "elixir": 1,
         "type": "Troop",
@@ -1126,7 +1126,7 @@
     },
     {
         "key": "electro-giant",
-        "name": "Electro Giant",
+        "name": "Электрогигант",
         "sc_key": "ElectroGiant",
         "elixir": 7,
         "type": "Troop",
@@ -1141,7 +1141,7 @@
     },
     {
         "key": "phoenix",
-        "name": "Phoenix",
+        "name": "Феникс",
         "sc_key": "Phoenix",
         "elixir": 4,
         "type": "Troop",
@@ -1156,7 +1156,7 @@
     },
     {
         "key": "cannon",
-        "name": "Cannon",
+        "name": "Пушка",
         "sc_key": "Cannon",
         "elixir": 3,
         "type": "Building",
@@ -1171,7 +1171,7 @@
     },
     {
         "key": "goblin-hut",
-        "name": "Goblin Hut",
+        "name": "Хижина гоблинов",
         "sc_key": "GoblinHut",
         "elixir": 5,
         "type": "Building",
@@ -1186,7 +1186,7 @@
     },
     {
         "key": "mortar",
-        "name": "Mortar",
+        "name": "Мортира",
         "sc_key": "Mortar",
         "elixir": 4,
         "type": "Building",
@@ -1201,7 +1201,7 @@
     },
     {
         "key": "inferno-tower",
-        "name": "Inferno Tower",
+        "name": "Адская башня",
         "sc_key": "InfernoTower",
         "elixir": 5,
         "type": "Building",
@@ -1216,7 +1216,7 @@
     },
     {
         "key": "bomb-tower",
-        "name": "Bomb Tower",
+        "name": "Башня-бомбёжка",
         "sc_key": "BombTower",
         "elixir": 4,
         "type": "Building",
@@ -1231,7 +1231,7 @@
     },
     {
         "key": "barbarian-hut",
-        "name": "Barbarian Hut",
+        "name": "Хижина варваров",
         "sc_key": "BarbarianHut",
         "elixir": 6,
         "type": "Building",
@@ -1246,7 +1246,7 @@
     },
     {
         "key": "tesla",
-        "name": "Tesla",
+        "name": "Тесла",
         "sc_key": "Tesla",
         "elixir": 4,
         "type": "Building",
@@ -1261,7 +1261,7 @@
     },
     {
         "key": "elixir-collector",
-        "name": "Elixir Collector",
+        "name": "Сборщик эликсира",
         "sc_key": "Elixir Collector",
         "elixir": 6,
         "type": "Building",
@@ -1276,7 +1276,7 @@
     },
     {
         "key": "x-bow",
-        "name": "X-Bow",
+        "name": "Арбалет",
         "sc_key": "Xbow",
         "elixir": 6,
         "type": "Building",
@@ -1291,7 +1291,7 @@
     },
     {
         "key": "tombstone",
-        "name": "Tombstone",
+        "name": "Надгробие",
         "sc_key": "Tombstone",
         "elixir": 3,
         "type": "Building",
@@ -1306,7 +1306,7 @@
     },
     {
         "key": "furnace",
-        "name": "Furnace",
+        "name": "Печь",
         "sc_key": "FirespiritHut",
         "elixir": 4,
         "type": "Building",
@@ -1321,7 +1321,7 @@
     },
     {
         "key": "goblin-cage",
-        "name": "Goblin Cage",
+        "name": "Клетка с гоблином",
         "sc_key": "GoblinCage",
         "elixir": 4,
         "type": "Building",
@@ -1336,7 +1336,7 @@
     },
     {
         "key": "goblin-drill",
-        "name": "Goblin Drill",
+        "name": "Гоблинский бур",
         "sc_key": "GoblinDrill",
         "elixir": 4,
         "type": "Building",
@@ -1351,7 +1351,7 @@
     },
     {
         "key": "fireball",
-        "name": "Fireball",
+        "name": "Огненный шар",
         "sc_key": "Fireball",
         "elixir": 4,
         "type": "Spell",
@@ -1366,7 +1366,7 @@
     },
     {
         "key": "arrows",
-        "name": "Arrows",
+        "name": "Стрелы",
         "sc_key": "Arrows",
         "elixir": 3,
         "type": "Spell",
@@ -1381,7 +1381,7 @@
     },
     {
         "key": "rage",
-        "name": "Rage",
+        "name": "Ярость",
         "sc_key": "Rage",
         "elixir": 2,
         "type": "Spell",
@@ -1396,7 +1396,7 @@
     },
     {
         "key": "rocket",
-        "name": "Rocket",
+        "name": "Ракета",
         "sc_key": "Rocket",
         "elixir": 6,
         "type": "Spell",
@@ -1411,7 +1411,7 @@
     },
     {
         "key": "goblin-barrel",
-        "name": "Goblin Barrel",
+        "name": "Гоблинская бочка",
         "sc_key": "GoblinBarrel",
         "elixir": 3,
         "type": "Spell",
@@ -1426,7 +1426,7 @@
     },
     {
         "key": "freeze",
-        "name": "Freeze",
+        "name": "Заморозка",
         "sc_key": "Freeze",
         "elixir": 4,
         "type": "Spell",
@@ -1441,7 +1441,7 @@
     },
     {
         "key": "mirror",
-        "name": "Mirror",
+        "name": "Зеркало",
         "sc_key": "Mirror",
         "elixir": 1,
         "type": "Spell",
@@ -1456,7 +1456,7 @@
     },
     {
         "key": "lightning",
-        "name": "Lightning",
+        "name": "Молния",
         "sc_key": "Lightning",
         "elixir": 6,
         "type": "Spell",
@@ -1471,7 +1471,7 @@
     },
     {
         "key": "zap",
-        "name": "Zap",
+        "name": "Разряд",
         "sc_key": "Zap",
         "elixir": 2,
         "type": "Spell",
@@ -1486,7 +1486,7 @@
     },
     {
         "key": "poison",
-        "name": "Poison",
+        "name": "Яд",
         "sc_key": "Poison",
         "elixir": 4,
         "type": "Spell",
@@ -1501,7 +1501,7 @@
     },
     {
         "key": "graveyard",
-        "name": "Graveyard",
+        "name": "Кладбище",
         "sc_key": "Graveyard",
         "elixir": 5,
         "type": "Spell",
@@ -1516,7 +1516,7 @@
     },
     {
         "key": "the-log",
-        "name": "The Log",
+        "name": "Бревно",
         "sc_key": "Log",
         "elixir": 2,
         "type": "Spell",
@@ -1531,7 +1531,7 @@
     },
     {
         "key": "tornado",
-        "name": "Tornado",
+        "name": "Торнадо",
         "sc_key": "Tornado",
         "elixir": 3,
         "type": "Spell",
@@ -1546,7 +1546,7 @@
     },
     {
         "key": "clone",
-        "name": "Clone",
+        "name": "Клон",
         "sc_key": "Clone",
         "elixir": 3,
         "type": "Spell",
@@ -1561,7 +1561,7 @@
     },
     {
         "key": "earthquake",
-        "name": "Earthquake",
+        "name": "Землетрясение",
         "sc_key": "Earthquake",
         "elixir": 3,
         "type": "Spell",
@@ -1576,7 +1576,7 @@
     },
     {
         "key": "barbarian-barrel",
-        "name": "Barbarian Barrel",
+        "name": "Варварская бочка",
         "sc_key": "BarbLog",
         "elixir": 2,
         "type": "Spell",
@@ -1591,7 +1591,7 @@
     },
     {
         "key": "heal-spirit",
-        "name": "Heal Spirit",
+        "name": "Дух исцеления",
         "sc_key": "Heal",
         "elixir": 1,
         "type": "Troop",
@@ -1606,7 +1606,7 @@
     },
     {
         "key": "giant-snowball",
-        "name": "Giant Snowball",
+        "name": "Гигантский снежок",
         "sc_key": "Snowball",
         "elixir": 2,
         "type": "Spell",
@@ -1621,7 +1621,7 @@
     },
     {
         "key": "royal-delivery",
-        "name": "Royal Delivery",
+        "name": "Королевская почта",
         "sc_key": "RoyalDelivery",
         "elixir": 3,
         "type": "Spell",
@@ -1636,7 +1636,7 @@
     },
     {
         "key": "berserker",
-        "name": "Berserker",
+        "name": "Берсеркша",
         "sc_key": "Berserker",
         "elixir": 2,
         "type": "Troop",
@@ -1651,7 +1651,7 @@
     },
     {
         "key": "suspicious-bush",
-        "name": "Suspicious Bush",
+        "name": "Подозрительный куст",
         "sc_key": "SuspiciousBush",
         "elixir": 2,
         "type": "Troop",
@@ -1666,7 +1666,7 @@
     },
     {
         "key": "goblin-demolisher",
-        "name": "Goblin Demolisher",
+        "name": "Гоблин-подрывник",
         "sc_key": "GoblinDemolisher",
         "elixir": 4,
         "type": "Troop",
@@ -1681,7 +1681,7 @@
     },
     {
         "key": "goblin-curse",
-        "name": "Goblin Curse",
+        "name": "Проклятие гоблинов",
         "sc_key": "GoblinCurse",
         "elixir": 2,
         "type": "Spell",
@@ -1696,7 +1696,7 @@
     },
     {
         "key": "vines",
-        "name": "Vines",
+        "name": "Лоза",
         "sc_key": "Vines",
         "elixir": 3,
         "type": "Spell",
@@ -1711,7 +1711,7 @@
     },
     {
         "key": "void",
-        "name": "Void",
+        "name": "Бездна",
         "sc_key": "Void",
         "elixir": 5,
         "type": "Spell",
@@ -1726,7 +1726,7 @@
     },
     {
         "key": "rune-giant",
-        "name": "Rune Giant",
+        "name": "Руническая гигантша",
         "sc_key": "RuneGiant",
         "elixir": 4,
         "type": "Troop",
@@ -1741,7 +1741,7 @@
     },
     {
         "key": "goblin-machine",
-        "name": "Goblin Machine",
+        "name": "Гоблинская машина",
         "sc_key": "GoblinMachine",
         "elixir": 5,
         "type": "Troop",
@@ -1756,7 +1756,7 @@
     },
     {
         "key": "spirit-empress",
-        "name": "Spirit Empress",
+        "name": "Императрица духов",
         "sc_key": "SpiritEmpress",
         "elixir": 6,
         "type": "Spell",
@@ -1771,7 +1771,7 @@
     },
     {
         "key": "little-prince",
-        "name": "Little Prince",
+        "name": "Маленький принц",
         "sc_key": "LittlePrince",
         "elixir": 3,
         "type": "Troop",
@@ -1786,7 +1786,7 @@
     },
     {
         "key": "goblinstein",
-        "name": "Goblinstein",
+        "name": "Гоблинштейн",
         "sc_key": "Goblinstein",
         "elixir": 5,
         "type": "Troop",
@@ -1801,7 +1801,7 @@
     },
     {
         "key": "boss-bandit",
-        "name": "Boss Bandit",
+        "name": "Главная бандитка",
         "sc_key": "BossBandit",
         "elixir": 6,
         "type": "Troop",
@@ -1816,14 +1816,14 @@
     },
     {
         "key": "ronin",
-        "name": "Ronin",
+        "name": "Ронин",
         "sc_key": "Ronin",
         "elixir": 4,
         "type": "Troop",
         "rarity": "Epic",
         "arena": 12,
         "description": "A masterless samurai who strikes swiftly with his katana. His dash ability lets him close the gap and deal double damage to the first enemy hit.",
-        "id": 26000104,
+        "id": 26000106,
         "evolved_spells_sc_key": "",
         "is_evolved": false,
         "has_evolution": false,
@@ -1831,7 +1831,7 @@
     },
     {
         "key": "giant-minion",
-        "name": "Giant Minion",
+        "name": "Миньон-гигант",
         "sc_key": "GiantMinion",
         "elixir": 5,
         "type": "Troop",
